@@ -11,7 +11,7 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>        
         
-        <title>Enter Products</title>
+        <title>Employees</title>
     </head>
     
     <body>
@@ -32,13 +32,12 @@ if (isset($_POST['submit'])) {
     // if we are here, it means that the form was submitted and we need to process form data
     
     // get data from form
-    $categoryid = $_POST['category-id'];
+    $grocerid = $_POST['grocerid'];
     $name = $_POST['name'];
-    $brand = $_POST['brand'];
-    $price = $_POST['price'];
-    $description = $_POST['description'];
-    $image = $_POST['image'];
-    $thumbnail = $_POST['thumb'];
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $admin = $_POST['admin'];
+    
         
     // variable to keep track if the form is complete (set to false if there are any issues with data)
     $isComplete = true;
@@ -47,24 +46,26 @@ if (isset($_POST['submit'])) {
     $errorMessage = "";
     
     // check each of the required variables in the table
-    if (!isset($categoryid)) {
-        $errorMessage .= "Please enter a category.\n";
+    /*if (!isset($grocerid)) {
+        $errorMessage .= "Please enter an employer.\n";
         $isComplete = false;
-    }
+    }*/
     
     if (!isset($name) || (strlen($name)==0)) {
-        $errorMessage .= "Please enter a product name.\n";
+        $errorMessage .= "Please enter employee name.\n";
         $isComplete = false;
     }
     
-    if (!isset($price) || (strlen($price)==0)) {
-        $errorMessage .= "Please enter the cost of the product.\n";
+    if (!$email) {
+        $errorMessage .= " Please enter employee email.";
         $isComplete = false;
+    } else {
+        $email = makeStringSafe($db, $email);
     }
     
     
-    if (!isset($description) || (strlen($description)==0)) {
-        $errorMessage .= "Please enter product description.\n";
+    if (!isset($phone) || (strlen($phone)==0)) {
+        $errorMessage .= "Please enter a contact number.\n";
         $isComplete = false;
     }
     
@@ -76,7 +77,7 @@ if (isset($_POST['submit'])) {
         // first enter record into pizza table
         //
         // put together SQL statement to insert new record
-        $query = "INSERT INTO pizza(categoryid, name, brand, price, description) VALUES ('$categoryid', '$name', '$brand', $price, '$description');";
+        $query = "INSERT INTO employees(grocerid, name, email, phone, admin) VALUES ('$grocerid', '$name', '$email', '$phone', $admin);";
         
         // connect to the database
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
@@ -90,10 +91,10 @@ if (isset($_POST['submit'])) {
 
 
         // we have successfully entered the pizza and its toppings
-        $success = "Successfully entered new product: " . $name;
+        $success = "Successfully entered employee: " . $name;
         
         // reset values of variables so the form is cleared
-        unset($categoryid, $name, $price, $description);
+        unset($grocerid, $name, $email, $phone);
     }
 }
 
@@ -105,8 +106,8 @@ if (isset($_POST['submit'])) {
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <ul class="nav navbar-nav navbar-left">
-        <li class="active"><a href="productEntry.php">Product Entry</a></li>
-        <li><a href="employees.php">Employees</a></li>
+        <li><a href="productEntry.php">Product Entry</a></li>
+        <li class="active"><a href="employees.php">Employees</a></li>
         <li><a href="orderManager.php">Open Orders</a></li>
      </ul>
      <ul class="nav navbar-nav navbar-right">
@@ -119,7 +120,7 @@ if (isset($_POST['submit'])) {
 <!-- Title -->
 <div class="row">
     <div class="col-xs-12">
-        <h1>Enter New Product</h1>        
+        <h1>Enter Employee</h1>        
     </div>
 </div>
 
@@ -163,44 +164,35 @@ if (isset($_POST['submit'])) {
 <div class="row">
     <div class="col-xs-12">
         
-<form action="productEntry.php" method="post" enctype="multipart/form-data">
+<form action="employees.php" method="post" enctype="multipart/form-data">
 <!-- name -->
 <div class="form-group">
     <label for="name">Name:</label>
     <input type="text" class="form-control" name="name" value="<?php if($name) { echo $name; } ?>"/>
 </div>
 
-<!-- shape -->
-<div class="form-group">
-    <label for="category-id">Category:</label>
-    <?php
-    // connect to the database
-    if (!isset($db)) {
-        $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
-    }
-    echo (generateDropdown($db, "prodcategories", "name", "id", $categoryid));        
-    ?>
-</div>
 
-
-<!-- crust -->
 <div class="form-group">
-    <label for="brand">Brand:</label>
-    <input type="text" class="form-control" name="brand" value="<?php if($brand) { echo $brand; } ?>"/>
-</div>
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" name="email"/>
+    </div>
 
 
 <!-- size -->
 <div class="form-group">
-    <label for="price">Price per Unit:</label>
-    <input type="number" class="form-control" name="price" value="<?php if($price) { echo $price; } ?>"/>
+    <label for="phone">Phone:</label>
+    <input type="text" class="form-control" name="phone" value="<?php if($phone) { echo $phone; } ?>"/>
 </div>
 
 
-<!-- cheese -->
 <div class="form-group">
-    <label for="description">Description:</label>
-    <textarea class="form-control" rows="3" id="description"></textarea> 
+    <label for="admin">Administrator:</label>
+    <label class="radio-inline">
+        <input type="radio" name="admin" value="1" <?php if($admin && isset($admin)) { echo 'checked'; } ?>> Yes
+    </label>    
+    <label class="radio-inline">
+        <input type="radio" name="cheese" value="0" <?php if(!$admin && !isset($admin)) { echo 'checked'; } ?>> No
+    </label>    
 </div>
 
 <button type="submit" class="btn btn-default" name="submit">Save</button>
@@ -217,29 +209,28 @@ if (isset($_POST['submit'])) {
     <div class="col-xs-12">
         
 <!-- set up html table to show contents -->
+<h2>Employees</h2>
 <table class="table table-hover">
     <!-- headers for table -->
     <thead>
-        <th>Image</th>
+        <th>ID</th>
         <th>Name</th>
-        <th>Category</th>
-        <th>Unit Price</th>
-        <th>Description</th>        
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Administrator</th>
+        <th></th>
+        <th></th>
     </thead>
 
 <?php
-    /*
-     * List all the pizzas in the database
-     *
-     */
-    
+       
     
     // connect to the database
     $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
     
     
     // set up a query to get information on the pizzas from the database
-    $query = 'SELECT products.name, products.price, products.description, products.thumbnail, prodcategories.name as category FROM products, prodcategories WHERE products.categoryid = prodcategories.id;';
+    $query = 'SELECT * from employees' ;
     
     
     // run the query
@@ -250,11 +241,20 @@ if (isset($_POST['submit'])) {
     while($row = nextTuple($result)) {
         echo "\n <tr>";
         // picture
-        echo "<td><img src='" . $row['thumbnail'] . "'></td>";
+        echo "<td>" . $row['id'] . "</td>";
         echo "<td>" . $row['name'] . "</td>";
-        echo "<td>" . $row['category'] . "</td>";
-        echo "<td>" . $row['price'] . "</td>";
-        echo "<td>" . $row['description'] . "</td>";
+        echo "<td>" . $row['email'] . "</td>";
+        echo "<td>" . $row['phone'] . "</td>";
+        if ($row['admin']) {
+            $admin = 'Yes';
+        } else {
+            $admin = 'No';
+        }
+        echo "<td>" . $admin . "</td>";
+        
+        echo "<td><a href='updateemployee.php?id=" . $row['id']  .  "'>edit</a></td>";
+        
+        echo "<td><a href='deleteemployee.php?id=" . $row['id']  .  "'>delete</a></td>";
                
         echo "</tr> \n";
     }

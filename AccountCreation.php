@@ -7,7 +7,7 @@
 <html>
     <head>
 
-<title>Create Account</title>
+<title>Enter Users</title>
 
 <!-- This is the code from bootstrap -->        
 <!-- Latest compiled and minified CSS -->
@@ -22,7 +22,16 @@
     </head>
     
     <body>
-
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+     <ul class="nav navbar-nav navbar-left">
+        <li><a href="index.php">home</a></li>
+     </ul>
+     <ul class="nav navbar-nav navbar-right">
+        <li><a href="login.php">log in</a></li>
+     </ul>
+  </div>
+</nav>
 <!-- Visible title -->
         <div class="row">
             <div class="col-xs-12">
@@ -34,12 +43,20 @@
         <div class="row">
             <div class="col-xs-12">
 <?php
+//
+// Code to handle input from form
+//
+
 if (isset($_POST['submit'])) {
     // only run if the form was submitted
     
     // get data from form
     $email = $_POST['email'];
 	$password = $_POST['password'];
+	$pwconfirm = $_POST['pwConfirm'];
+	$name = $_POST['name'];
+	$address = $_POST['address'];
+	$phone = $_POST['phone'];
     
    // connect to the database
     $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);    
@@ -49,90 +66,91 @@ if (isset($_POST['submit'])) {
     $errorMessage = "";
     
     if (!$email) {
-        $errorMessage .= " Email";
+        $errorMessage .= " Please enter your email.";
         $isComplete = false;
     } else {
         $email = makeStringSafe($db, $email);
     }
-	if (!$firstName) {
-        $errorMessage .= " First Name";
-        $isComplete = false;
-	}
-		
-	if (!$lastName) {
-        $errorMessage .= " Last Name";
-        $isComplete = false;
-	}
-	
-	if (!$address) {
-        $errorMessage .= " Street address.";
-        $isComplete = false;
-	}
-	
-	if (!$lastName) {
-        $errorMessage .= " City";
-        $isComplete = false;
-	}
-	
-	if (!$province) {
-        $errorMessage .= " State";
-        $isComplete = false;
-	}
-	
-	if (!$email) {
-        $errorMessage .= " Please enter an email.";
-        $isComplete = false;
-	}
 
     if (!$password) {
         $errorMessage .= " Please enter a password.";
         $isComplete = false;
-    }	    
-	
-    if (!$isComplete) {
-        punt($errorMessage);
     }
+	
+	if (!$pwconfirm) {
+        $errorMessage .= " Please re-enter your password.";
+        $isComplete = false;
+    }
+	
+	if ($password != $pwconfirm) {
+		$errorMessage .= " Your passwords are not the same.  Please try again.";
+		$isComplete = false;
+	}
+	
+	if (!isset($name) || (strlen($name)==0)) {
+        $errorMessage .= "Please enter your name.\n";
+        $isComplete = false;
+    }
+	
+	if (!isset($address) || (strlen($address)==0)) {
+        $errorMessage .= "Please enter your address.\n";
+        $isComplete = false;
+    }
+	
+	if (!isset($phone) || (strlen($phone)==0)) {
+        $errorMessage .= "Please enter your phone number.\n";
+        $isComplete = false;
+    }
+	    
+	
+    if ($isComplete) {
     
-    // get the hashed password from the user with the email that got entered
-    $query = "SELECT hashpass FROM account WHERE email='" . $email . "';";
-    $result = queryDB($query, $db);
-    if (nTuples($result) > 0) {
-        // there is an account that corresponds to the email that the user entered
-		// get the hashed password for that account
-		$row = nextTuple($result);
-		$hashpass = $row['hashpass'];
-		
-		// compare entered password to the password on the database
-		if ($hashpass == crypt($password, $hashpass)) {
-			// password was entered correctly
+		// check if there's a user with the same email
+		$query = "SELECT * FROM customers WHERE email='" . $email . "';";
+		$result = queryDB($query, $db);
+		if (nTuples($result) == 0) {
+			// if we're here it means there's already a user with the same email
 			
-			// start a session
-			if (session_start()) {
-				$_SESSION['email'] = $email;
-				header('Location: cars.php');
-				exit;
-			} else {
-				// if we can't start a session
-				punt("Unable to start session.");
-			}
+			// generate the hashed version of the password
+			$pwHash = crypt($password, getSalt());
+			
+			// put together sql code to insert tuple or record
+			$insert = "INSERT INTO users(email, passwordhash) VALUES ('" . $email . "', '" . $pwHash . "');";
+		
+			// run the insert statement
+			$result = queryDB($insert, $db);
+			
+			// we have successfully inserted the record
+			echo ("Successfully entered " . $email . " into the database.");
 		} else {
-			// wrong password
-			punt("Wrong password. <a href='login.php'>Try again</a>.");
+			$isComplete = false;
+			$errorMessage = "Sorry. " . $email . " is already being used";
 		}
-    } else {
-		// email entered is not in the users table
-		punt("This email is not in our system or is incorrect. <a href='login.php'>Try again</a>.");
 	}
 }
 ?>
             </div>
         </div>
+		
+		
+<!-- Showing errors, if any -->
+<div class="row">
+    <div class="col-xs-12">
+<?php
+    if (isset($isComplete) && !$isComplete) {
+        echo '<div class="alert alert-danger" role="alert">';
+        echo ($errorMessage);
+        echo '</div>';
+    }
+?>            
+    </div>
+</div>
 
 <!-- form for inputting data -->
         <div class="row">
             <div class="col-xs-12">
                 
-<form action="login.php" method="post">
+<form action="AccountCreation.php" method="post">
 <!-- email -->
     <div class="form-group">
         <label for="email">email</label>
@@ -145,13 +163,34 @@ if (isset($_POST['submit'])) {
         <input type="password" class="form-control" name="password"/>
     </div>
 
-    <button type="submit" class="btn btn-default" name="submit">Login</button>
+<!-- password2 -->
+    <div class="form-group">
+        <label for="pwConfirm">Enter password again</label>
+        <input type="password" class="form-control" name="pwConfirm"/>
+    </div>
+	
+	    
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" name="name" value="<?php if($name) { echo $name; } ?>"/>
+    </div>
+    
+    <div class="form-group">
+        <label for="address">Address:</label>
+        <input type="text" class="form-control" name="address" value="<?php if($address) { echo $address; } ?>"/>
+    </div>
+	
+	<div class="form-group">
+        <label for="phone">Phone:</label>
+        <input type="text" class="form-control" name="phone" value="<?php if($phone) { echo $phone; } ?>"/>
+    </div>
+    
+    <button type="submit" class="btn btn-default" name="submit">Submit</button>
 </form>
                 
             </div>
         </div>
-            
-</div>        
+      
 
         
     </body>
