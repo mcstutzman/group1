@@ -22,22 +22,65 @@ include_once('config.php');
 include_once('dbutils.php');
 ?>
     
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
-    
-     <ul class="nav navbar-nav navbar-right">
-        <li><a href="account.php"></a>Account</li>
-        <?php
-        if (isset($_SESSION['email'])) {
-            echo "<li><a href="login.php"></a>log in</li>";            
-        }
-        else{
-            echo "<li><a href="logout.php">log out</a></li>";
-        }
-        ?>
-        <li><a href="cart.php"></a>cart</li>
-     </ul>
-  </div>
-</nav>
-
+<div class="row">
+    <div class="col-xs-12">
+        <h1>Food.biz</h1>        
+    </div>
+</div>
+<div class="jumbotron">
+    <div class= "container">
+        <h1>Welcome to Food.biz!</h1>
+        <p>Please click here to create an account and start saving or browse our wide selection of products by clicking one of the links below.</p>
+        <p><a class="btn btn-primary btn-lg" href="AccountCreation.php" role="button">Create Account</a>&nbsp<a class="btn btn-primary btn-lg" href="login.php" role="button">Log In</a></p>
+    </div>
+</div>
 <!-- product categories -->
+
+<div class="row">
+    <div class="col-xs-12 col-md-2 col-md-offset-3">
+        <a href="shop.php?categoryid=4&grocerid=1" class="thumbnail">
+            <img src="GroceryPics/steakTN.png" alt="meat">
+        </a>
+        <div class="caption">
+            <h3><a href="shop.php?categoryid=4&grocerid=1">Meat</a></h3>
+        </div>
+    </div>
+    <div class="col-xs-12 col-md-2 ">
+        <a href="shop.php?categoryid=2&grocerid=1" class="thumbnail">
+            <img src="GroceryPics/broccoliTN.jpg" alt="produce">
+        </a>
+        <div class="caption">
+            <h3><a href="shop.php?categoryid=2&grocerid=1">Produce</a></h3>
+        </div>
+    </div>
+    <div class="col-xs-12 col-md-2">
+        <a href="shop.php?categoryid=1&grocerid=1" class="thumbnail">
+            <img src="GroceryPics/milkTN.jpg" alt="dairy">
+        </a>
+        <div class="caption">
+            <h3><a href="shop.php?categoryid=1&grocerid=1">Dairy</a></h3>
+        </div>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-xs-12 col-md-2 col-md-offset-3">
+        <a href="shop.php?categoryid=3&grocerid=1" class="thumbnail">
+            <img src="GroceryPics/toiletpaperTN.jpg" alt="paper products">
+        </a>
+        <div class="caption">
+            <h3><a href="shop.php?categoryid=3&grocerid=1">Paper Products</a></h3>
+        </div>
+    </div>
+    <div class="col-xs-12 col-md-2 ">
+        <a href="shop.php?categoryid=5&grocerid=1" class="thumbnail">
+            <img src="GroceryPics/herseybarTN.jpg" alt="candy">
+        </a>
+        <div class="caption">
+            <h3><a href="shop.php?categoryid=5&grocerid=1">Candy</a></h3>
+        </div>
+    </div>
+    
+</div>
+    </body>
+</html>
