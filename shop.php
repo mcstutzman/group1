@@ -36,9 +36,9 @@ include_once('dbutils.php');
         ?>
         </li>
         <li class="active"><a href="shop.php">Home</a></li>
-        <form class="navbar-form navbar-left">
+        <form class="navbar-form navbar-left" action="shop.php" method="Get">
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="Search">
+          <input type="text" class="form-control" placeholder="Search" name="search">
         </div>
         <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
       </form>
@@ -54,16 +54,7 @@ include_once('dbutils.php');
 </nav>
 <h1>Food.biz</h1>
 
-<div class= "row">
-    <div class="col-md-10 col-md-offset-1">
-    <div class="input-group">
-      <input type="text" class="form-control" placeholder="Search">
-      <span class="input-group-btn">
-        <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
-      </span>
-    </div><!-- /input-group -->
-  </div><!-- /.col-lg-6 -->    
-</div>
+
 <div class="row">
     <div class="col-xs-12 col-md-10 col-md-offset-1">
         
@@ -84,7 +75,7 @@ include_once('dbutils.php');
      *
      */
     
-    
+    $search = $_GET['search'];
     // connect to the database
     $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
     
@@ -93,11 +84,12 @@ include_once('dbutils.php');
     if ($_GET['categoryid']){
         $query = 'SELECT * FROM products WHERE categoryid = '.$_GET['categoryid'].';';
         }
-    /*elseif ($_GET['search']{
-        $query = 'SELECT * FROM products WHERE name CONTAINS '.$_GET['search'].';';
-    }*/
+    elseif ($search){
+        $query = 'SELECT * FROM products WHERE name LIKE "%'.$search.'%" OR description LIKE "%'.$search.'%" OR brand LIKE "%'.$search.'%";';
+        
+    }
     else{
-        $query = 'SELECT products.name, products.description, products.thumbnail, prodcategories.name as category FROM products, prodcategories WHERE products.categoryid = prodcategories.id;';
+        $query = 'SELECT * FROM products;';
         }
     
     // run the query
@@ -110,9 +102,13 @@ include_once('dbutils.php');
         // picture
         echo "<td><a href='productdetails.php'><img src='" . $row['thumbnail'] . "'class='img-responsive'></a></td>";
         echo "<td>" . $row['name'] . "</td>";
-        echo "<td>" . $row['category'] . "</td>";
-        echo "<td>" . $row['price'] . "</td>";
-        echo "<td>" . $row['description'] . "</td>";
+        echo "<td>" . $row['categoryid'] . "</td>";
+        
+        $qprice = 'SELECT saleprice FROM productdetails WHERE productdetails.productid = '.$row['id'].' AND productdetails.grocerid = 1;';
+        $rprice = queryDB($query, $db);
+        
+        echo "<td>".$rprice."</td>";
+        
                
         echo "</tr> \n";
     }
