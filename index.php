@@ -37,7 +37,10 @@ include_once('dbutils.php');
 <!-- product categories -->
 
 <div class="row">
-    <div class="col-xs-12 col-md-2 col-md-offset-3">
+    <div class="col-md-3">
+        
+    </div>
+    <div class="col-xs-12 col-md-2">
         <a href="shop.php?categoryid=4&grocerid=1" class="thumbnail">
             <img src="GroceryPics/steakTN.png" alt="meat">
         </a>
