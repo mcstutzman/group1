@@ -17,8 +17,15 @@
 <?php
 include_once('config.php');
 include_once('dbutils.php');
+
 /*if (isset($_POST['submit'])){
     
+    $productid = $_POST['id'];
+    $quantity = $_POST['quantity'];
+    
+    if (isset(!$_SESSION['order'])){
+        $query = 
+    }
 }*/
 ?>
 
@@ -35,7 +42,7 @@ include_once('dbutils.php');
             }
         ?>
         </li>
-        <li class="active"><a href="shop.php">Home</a></li>
+        <li class="active"><a href="index.php">Home</a></li>
         <form class="navbar-form navbar-left" action="shop.php" method="Get">
         <div class="form-group">
           <input type="text" class="form-control" placeholder="Search" name="search">
@@ -54,9 +61,22 @@ include_once('dbutils.php');
 </nav>
 <h1>Food.biz</h1>
 
-
+<div class="row">&nbsp</div>
+<div class="row">&nbsp</div>
 <div class="row">
-    <div class="col-xs-12 col-md-10 col-md-offset-1">
+    <div class = "col-md-1">
+        <div class="list-group">
+        <?php
+        $query = 'SELECT * from prodcategories;';
+        $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+        $result = queryDB($query, $db);
+        while ($cat = nextTuple($result)){
+            echo '<a href="shop.php?categoryid='.$cat['id'].'" class="list-group-item">'.$cat['name'].'</a>';
+        }
+        ?>
+        </div>
+    </div>
+    <div class="col-xs-12 col-md-10">
         
 <!-- set up html table to show contents -->
 <table class="table table-hover">
@@ -101,21 +121,31 @@ include_once('dbutils.php');
         echo "\n <tr>";
         // picture
         echo "<td><a href='productdetails.php?productid=".$row['categoryid']."'><img src='" . $row['thumbnail'] . "'class='img-responsive'></a></td>";
+        echo "<td>" . $row['brand']. "</td>";
         echo "<td>" . $row['name'] . "</td>";
-        echo "<td>" . $row['categoryid'] . "</td>";
         
+        $qprice = 'SELECT saleprice FROM productdetails WHERE productid ='.$row['id'].' AND grocerid = 1;';
+        $rprice = queryDB($qprice, $db);
+        $price = nextTuple($rprice);
+        echo "<td>".$price['saleprice']."</td>";
         
-        
-        /*echo "<td>".$rprice."</td>";*/
+        echo '<form action="shop.php" method="post">';
+        echo '<input type="hidden" name="id" value='.$row['id'].'>';
+        echo '<td><select class="form-control" name="quantity">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                </select></td>';
+        echo '<td><button type="submit" class="btn btn-default">Add to cart</button></td>';
+        echo '</form>';
+      
         
                
         echo "</tr> \n";
     }
-    /*echo 1;
-    $qprice = 'SELECT * FROM productdetails WHERE productid = 1 AND grocerid = 1;';
-    echo 2;
-    $rprice = queryDB($query, $db);
-    echo $rprice;*/
+    
     
 ?>        
     

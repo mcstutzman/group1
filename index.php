@@ -20,6 +20,8 @@
 <?php
 include_once('config.php');
 include_once('dbutils.php');
+
+$_SESSION['grocerid']=1;
 ?>
     
 <div class="row">
@@ -40,50 +42,22 @@ include_once('dbutils.php');
     <div class="col-md-3">
         
     </div>
-    <div class="col-xs-12 col-md-2">
-        <a href="shop.php?categoryid=4&grocerid=1" class="thumbnail">
-            <img src="GroceryPics/steakTN.png" alt="meat">
-        </a>
-        <div class="caption">
-            <h3><a href="shop.php?categoryid=4&grocerid=1">Meat</a></h3>
-        </div>
+    <div class="col-xs-12 col-md-6">
+    <?php
+        $query = 'SELECT * from prodcategories;';
+        $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+        $result = queryDB($query, $db);
+        while ($cat = nextTuple($result)){
+            echo '<div class="col-xs-12 col-md-4">
+                    <a href="shop.php?categoryid='.$cat['id'].'&grocerid='.$_SESSION['grocerid'].'" class="thumbnail">
+                        <img src="'.$cat['thumbnail'].'" alt="'.$cat['name'].'"></a>
+                    <div class="caption">
+                    <h3><a href="shop.php?categoryid='.$cat['id'].'&grocerid=1">'.$cat['name'].'</a></h3>
+                    </div>
+                    </div>';
+        }
+        ?>
     </div>
-    <div class="col-xs-12 col-md-2 ">
-        <a href="shop.php?categoryid=2&grocerid=1" class="thumbnail">
-            <img src="GroceryPics/broccoliTN.jpg" alt="produce">
-        </a>
-        <div class="caption">
-            <h3><a href="shop.php?categoryid=2&grocerid=1">Produce</a></h3>
-        </div>
-    </div>
-    <div class="col-xs-12 col-md-2">
-        <a href="shop.php?categoryid=1&grocerid=1" class="thumbnail">
-            <img src="GroceryPics/milkTN.jpg" alt="dairy">
-        </a>
-        <div class="caption">
-            <h3><a href="shop.php?categoryid=1&grocerid=1">Dairy</a></h3>
-        </div>
-    </div>
-
-</div>
-<div class="row">
-    <div class="col-xs-12 col-md-2 col-md-offset-3">
-        <a href="shop.php?categoryid=3&grocerid=1" class="thumbnail">
-            <img src="GroceryPics/toiletpaperTN.jpg" alt="paper products">
-        </a>
-        <div class="caption">
-            <h3><a href="shop.php?categoryid=3&grocerid=1">Paper Products</a></h3>
-        </div>
-    </div>
-    <div class="col-xs-12 col-md-2 ">
-        <a href="shop.php?categoryid=5&grocerid=1" class="thumbnail">
-            <img src="GroceryPics/herseybarTN.jpg" alt="candy">
-        </a>
-        <div class="caption">
-            <h3><a href="shop.php?categoryid=5&grocerid=1">Candy</a></h3>
-        </div>
-    </div>
-    
-</div>
+ 
     </body>
 </html>
