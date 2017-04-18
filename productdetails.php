@@ -1,5 +1,3 @@
-
-
 <html>
     <head>
 <!-- Bootstrap links -->
@@ -15,14 +13,15 @@
         
         <title>Food.biz</title>
     </head>
-    
-    <body>
+<body>
 <?php
 include_once('config.php');
 include_once('dbutils.php');
-
-$_SESSION['grocerid']=1;
+/*if (isset($_POST['submit'])){
+    
+}*/
 ?>
+
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <ul class="nav navbar-nav navbar-left">
@@ -53,37 +52,58 @@ $_SESSION['grocerid']=1;
      </ul>
   </div>
 </nav>
-<h1>Food.biz</h1>        
-    
-<div class="jumbotron">
-    <div class= "container">
-        <h1>Welcome to Food.biz!</h1>
-        <p>Please click here to create an account and start saving or browse our wide selection of products by clicking one of the links below.</p>
-        <p><a class="btn btn-primary btn-lg" href="AccountCreation.php" role="button">Create Account</a>&nbsp<a class="btn btn-primary btn-lg" href="login.php" role="button">Log In</a></p>
-    </div>
-</div>
-<!-- product categories -->
+<h1>Food.biz</h1>
 
-<div class="row">
-    <div class="col-md-3">
-        
-    </div>
-    <div class="col-xs-12 col-md-6">
-    <?php
+
+<div class= "row">
+    <div class= "col-md-1">
+        <div class="list-group">
+        <?php
         $query = 'SELECT * from prodcategories;';
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
         $result = queryDB($query, $db);
         while ($cat = nextTuple($result)){
-            echo '<div class="col-xs-12 col-md-4">
-                    <a href="shop.php?categoryid='.$cat['id'].'&grocerid='.$_SESSION['grocerid'].'" class="thumbnail">
-                        <img src="'.$cat['thumbnail'].'" alt="'.$cat['name'].'"></a>
-                    <div class="caption">
-                    <h3><a href="shop.php?categoryid='.$cat['id'].'&grocerid=1">'.$cat['name'].'</a></h3>
-                    </div>
-                    </div>';
+            echo '<a href="shop.php?categoryid='.$cat['id'].'" class="list-group-item">'.$cat['name'].'</a>';
         }
         ?>
+        </div>
     </div>
- 
-    </body>
+    <div class= "col-md-4">
+        <?php
+        $productid = $_GET['productid'];
+        $query = 'SELECT * FROM products WHERE id ='.$productid.';';
+        $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+        $result = queryDB($query, $db);
+        $product = nextTuple($result);
+        echo "<img src=".$product['image'].">";
+        echo "</div>";
+        echo "<div class= 'col-md-4'>";
+        echo "<h2>".$product['brand']." ".$product['name']."</h2>\r\n";
+        echo "<p>".$product['description']."</p>";
+        echo "</div>";
+        echo "<div class= 'col-md-1'>";
+        $qprice = 'SELECT saleprice FROM productdetails WHERE productid ='.$product['id'].' AND grocerid = 1;';
+        $rprice = queryDB($qprice, $db);
+        $price = nextTuple($rprice);
+        echo "<h3>".$price['saleprice']."</h3>";
+        echo '<form action="shop.php" method="post">';
+        echo '<input type="hidden" name="id" value='.$product['id'].'>';
+        echo '<select class="form-control" name="quantity">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                </select>';
+        echo "</div>";
+        echo "<div class= 'col-md-1'>";        
+        echo '<button type="submit" class="btn btn-default">Add to cart</button>';
+        echo '</form>';
+        echo "</div>";
+        
+        
+        ?>
+    
+</div>
+</body>
 </html>
