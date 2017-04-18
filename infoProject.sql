@@ -106,7 +106,7 @@ insert into products (name, categoryid, price, description, thumbnail, image, br
 insert into products (name, categoryid, price, description, thumbnail, image, brand) values ('Apple', 2, 0.88, "Granny Smith Apple", "GroceryPics/appleTN.jpg", "GroceryPics/apple.jpeg", "Kanzi");
 insert into products (name, categoryid, price, description, thumbnail, image, brand) values ('Ice Cream', 1, 4.50, "White Chocolae Macadamia Nut Cookie Ice Cream", "GroceryPics/bluebunnyTN.jpg", "GroceryPics/blue bunny.jpg", "Blue Bunny");
 insert into products (name, categoryid, price, description, thumbnail, image, brand) values ('Paper Towel', 3, 1.50, "Single Roll Bounty Paper Towel", "GroceryPics/bountyTN.jpg", "GroceryPics/bounty.jpg", "Bounty");
-insert into products (name, categoryid, price, description, thumbnail, image, brand) values ('Broccoli', 2, 0.80, "Bundle of Broccoli", "GroceryPics/BroccoliTN.jpg", "GroceryPics/Broccoli.jpg", "Green Isle");
+insert into products (name, categoryid, price, description, thumbnail, image, brand) values ('Broccoli', 2, 0.80, "Bundle of Broccoli", "GroceryPics/broccoliTN.jpg", "GroceryPics/Broccoli.jpg", "Green Isle");
 insert into products (name, categoryid, price, description, thumbnail, image, brand) values ('Cat Food', 6, 3.59, "Meow Mix Original Choice Cat Food", "GroceryPics/catfoodTN.jpg", "GroceryPics/catfood.jpg", "Meow Mix");
 insert into products (name, categoryid, price, description, thumbnail, image, brand) values ('Coffee', 6, 8.50, "Folgers Coffee House Style Coffee", "GroceryPics/coffeeTN.jpg", "GroceryPics/coffee.jpg", "Folgers");
 insert into products (name, categoryid, price, description, thumbnail, image, brand) values ('Pizza', 6, 3.99, "Digiorno Rising Crust Pepperoini Pizza", "GroceryPics/digiornoTN.jpg", "GroceryPics/digiorno.jpg", "Digiorno");
@@ -150,6 +150,24 @@ insert into productdetails (productid, grocerid, saleprice, stock) values (5, 1,
 insert into productdetails (productid, grocerid, saleprice, stock) values (1, 2, 4.99, 6);
 insert into productdetails (productid, grocerid, saleprice, stock) values (2, 2, 1.15, 12);
 insert into productdetails (productid, grocerid, saleprice, stock) values (3, 2, 6.49, 46);
+insert into productdetails (productid, grocerid, saleprice, stock) values (6, 1, 1.49, 55);
+insert into productdetails (productid, grocerid, saleprice, stock) values (7, 1, 6.00, 13);
+insert into productdetails (productid, grocerid, saleprice, stock) values (8, 1, 2.29, 16);
+insert into productdetails (productid, grocerid, saleprice, stock) values (9, 1, .99, 42);
+insert into productdetails (productid, grocerid, saleprice, stock) values (10, 1, 11.99, 12);
+insert into productdetails (productid, grocerid, saleprice, stock) values (11, 1, 9.99, 9);
+insert into productdetails (productid, grocerid, saleprice, stock) values (12, 1, 5.99, 15);
+insert into productdetails (productid, grocerid, saleprice, stock) values (13, 1, 3.99, 22);
+insert into productdetails (productid, grocerid, saleprice, stock) values (14, 1, 4.29, 14);
+insert into productdetails (productid, grocerid, saleprice, stock) values (15, 1, 3.99, 15);
+insert into productdetails (productid, grocerid, saleprice, stock) values (16, 1, 2.49, 7);
+
+
+
+
+
+
+
 
 insert into grocers (name, email, phone) values ('food.biz', 'boss@food.biz', '(555)555-5555');
 insert into grocers (name, email, phone) values ('scam.food', 'thief@scam.food', '(545)545-5445');
