@@ -1,12 +1,3 @@
-<?php
-session_start();
-$_SESSION['grocerid']=1;
-if (!isset($_SESSION['customerid'])){
-    $_SESSION['customerid']= '0';
-}
-echo var_dump($_SESSION);
-?>
-
 <html>
     <head>
 <!-- Bootstrap links -->
@@ -19,17 +10,14 @@ echo var_dump($_SESSION);
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>        
-        
-        <title>Food.biz</title>
-    </head>
-    
-    <body>
 <?php
+session_start();
+echo var_dump($_SESSION);
 include_once('config.php');
 include_once('dbutils.php');
-
-
 ?>
+        <title>Food.biz</title>
+    </head>
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <ul class="nav navbar-nav navbar-left">
@@ -60,37 +48,56 @@ include_once('dbutils.php');
      </ul>
   </div>
 </nav>
-<h1>Food.biz</h1>        
-    
-<div class="jumbotron">
-    <div class= "container">
-        <h1>Welcome to Food.biz!</h1>
-        <p>Please click here to create an account and start saving or browse our wide selection of products by clicking one of the links below.</p>
-        <p><a class="btn btn-primary btn-lg" href="AccountCreation.php" role="button">Create Account</a>&nbsp<a class="btn btn-primary btn-lg" href="login.php" role="button">Log In</a></p>
-    </div>
-</div>
-<!-- product categories -->
-
-<div class="row">
-    <div class="col-md-3">
-        
-    </div>
-    <div class="col-xs-12 col-md-6">
+<body>
     <?php
-        $query = 'SELECT * from prodcategories;';
-        $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
-        $result = queryDB($query, $db);
-        while ($cat = nextTuple($result)){
-            echo '<div class="col-xs-12 col-md-4">
-                    <a href="shop.php?categoryid='.$cat['id'].'&grocerid='.$_SESSION['grocerid'].'" class="thumbnail">
-                        <img src="'.$cat['thumbnail'].'" alt="'.$cat['name'].'"></a>
-                    <div class="caption">
-                    <h3><a href="shop.php?categoryid='.$cat['id'].'&grocerid=1">'.$cat['name'].'</a></h3>
-                    </div>
-                    </div>';
+        echo "<h1>Order #".$_SESSION['orderid']."</h1>"
+    
+    ?>
+    <div class="row">
+        <div class="col-md-1"></div>
+    <div class="col-md-10">
+        
+<!-- set up html table to show contents -->
+<table class="table table-hover">
+    <!-- headers for table -->
+    <thead>
+        <th></th>
+        <th>Item</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        
+    </thead>
+<?php
+    
+    $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);    
+    $query = 'SELECT * FROM orderdetails;';    
+    // run the query
+    $result = queryDB($query, $db);
+    
+    while($row = nextTuple($result)) {
+        echo "\n <tr>";
+        $query2= 'SELECT * FROM products WHERE id ='.$row['productid'].";";
+        $result2 = queryDB($query2, $db);
+        $product = nextTuple($result2);
+        echo "<td><a href='productdetails.php?productid=".$row['productid']."'><img src='" . $product['thumbnail'] . "'class='img-responsive'></a></td>";
+        echo "<td>" . $product['name'] . "</td>";
+        echo "<td>" . $row['quantity'] . "</td>";
+        $itemtotal = $row['quantity'] * $row['price'];
+        echo "<td>$" . $itemtotal . "</td>";
+        echo "</tr> \n";
+        $total = $total + $itemtotal;
         }
-        ?>
-    </div>
- 
-    </body>
+    echo '</table>';
+    echo '</div>';
+    echo '</div>';
+    echo '<div class="row">';
+    echo '<div class="col-md-offset-10">';
+    echo '<h3>Total: $'.$total.'</h3>';
+    echo '</div>';
+    echo '</div>';
+?>
+
+    
+        
+</body>
 </html>

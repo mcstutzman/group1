@@ -15,18 +15,35 @@
     </head>
 <body>
 <?php
+session_start();
+echo var_dump($_SESSION);
 include_once('config.php');
 include_once('dbutils.php');
 
-/*if (isset($_POST['submit'])){
+if (isset($_POST['submit'])){
     
     $productid = $_POST['id'];
     $quantity = $_POST['quantity'];
+    $price = $_POST['price'];
+    $grocerid = $_SESSION['grocerid'];
+    $customerid = $_SESSION['customerid'];
     
-    if (isset(!$_SESSION['order'])){
-        $query = 
+    if (!isset($_SESSION['orderid'])){
+        $query = 'INSERT INTO orders (grocerid, customerid) VALUES ('.$grocerid.','.$customerid.');';
+        $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+        $result = queryDB($query, $db);
+        $_SESSION['orderid']= mysqli_insert_id($db);
+        $query2 = 'INSERT INTO orderdetails (orderid, productid, quantity, price) VALUES ('.$_SESSION['orderid'].','.$productid.','.$quantity.','.$price.');';
+        $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+        $result2 = queryDB($query2, $db);
     }
-}*/
+    else {
+        $query2 = 'INSERT INTO orderdetails (orderid, productid, quantity, price) VALUES ('.$_SESSION['orderid'].','.$productid.','.$quantity.','.$price.');';
+        $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+        $result2 = queryDB($query2, $db);
+    }
+    $success = "Added item to cart";
+}
 ?>
 
 <nav class="navbar navbar-default">
@@ -60,7 +77,14 @@ include_once('dbutils.php');
   </div>
 </nav>
 <h1>Food.biz</h1>
-
+<?php
+    if (isset($success)) {
+        // for successes after the form was submitted
+        echo '<div class="alert alert-success" role="alert">';
+        echo ($success);
+        echo '</div>';
+        }
+?>
 <div class="row">&nbsp</div>
 <div class="row">&nbsp</div>
 <div class="row">
@@ -120,17 +144,18 @@ include_once('dbutils.php');
     while($row = nextTuple($result)) {
         echo "\n <tr>";
         // picture
-        echo "<td><a href='productdetails.php?productid=".$row['categoryid']."'><img src='" . $row['thumbnail'] . "'class='img-responsive'></a></td>";
+        echo "<td><a href='productdetails.php?productid=".$row['id']."'><img src='" . $row['thumbnail'] . "'class='img-responsive'></a></td>";
         echo "<td>" . $row['brand']. "</td>";
         echo "<td>" . $row['name'] . "</td>";
         
         $qprice = 'SELECT saleprice FROM productdetails WHERE productid ='.$row['id'].' AND grocerid = 1;';
         $rprice = queryDB($qprice, $db);
         $price = nextTuple($rprice);
-        echo "<td>".$price['saleprice']."</td>";
+        echo "<td>$".$price['saleprice']."</td>";
         
         echo '<form action="shop.php" method="post">';
         echo '<input type="hidden" name="id" value='.$row['id'].'>';
+        echo '<input type="hidden" name="price" value='.$price['saleprice'].'>';
         echo '<td><select class="form-control" name="quantity">
                 <option>1</option>
                 <option>2</option>
@@ -138,7 +163,7 @@ include_once('dbutils.php');
                 <option>4</option>
                 <option>5</option>
                 </select></td>';
-        echo '<td><button type="submit" class="btn btn-default">Add to cart</button></td>';
+        echo '<td><button type="submit" class="btn btn-default" name="submit">Add to cart</button></td>';
         echo '</form>';
       
         

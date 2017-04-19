@@ -115,7 +115,7 @@ if (isset($_POST['submit'])) {
 			$pwHash = crypt($password, getSalt());
 			
 			// put together sql code to insert tuple or record
-			$insert = "INSERT INTO users(email, passwordhash) VALUES ('" . $email . "', '" . $pwHash . "');";
+			$insert = "INSERT INTO customers(email, passwordhash, name, address, phone) VALUES ('".$email."', '".$pwHash."', '".$name."', '".$address."', '".$phone."');";
 		
 			// run the insert statement
 			$result = queryDB($insert, $db);

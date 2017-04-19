@@ -76,7 +76,7 @@ if (isset($_POST['submit'])) {
     }
     
     // get the hashed password from the user with the email that got entered
-    $query = "SELECT passwordhash FROM customers WHERE email='" . $email . "';";
+    $query = "SELECT * FROM customers WHERE email='" . $email . "';";
     $result = queryDB($query, $db);
     if (nTuples($result) > 0) {
         // there is an account that corresponds to the email that the user entered
@@ -91,6 +91,7 @@ if (isset($_POST['submit'])) {
 			// start a session
 			if (session_start()) {
 				$_SESSION['email'] = $email;
+				$_SESSION['customerid'] = $row['id'];
 				header('Location: index.php');
 				exit;
 			} else {

@@ -85,9 +85,10 @@ include_once('dbutils.php');
         $qprice = 'SELECT saleprice FROM productdetails WHERE productid ='.$product['id'].' AND grocerid = 1;';
         $rprice = queryDB($qprice, $db);
         $price = nextTuple($rprice);
-        echo "<h3>".$price['saleprice']."</h3>";
+        echo "<h3>$".$price['saleprice']."</h3>";
         echo '<form action="shop.php" method="post">';
         echo '<input type="hidden" name="id" value='.$product['id'].'>';
+        echo '<input type="hidden" name="price" value='.$price['saleprice'].'>';
         echo '<select class="form-control" name="quantity">
                 <option>1</option>
                 <option>2</option>
@@ -97,7 +98,7 @@ include_once('dbutils.php');
                 </select>';
         echo "</div>";
         echo "<div class= 'col-md-1'>";        
-        echo '<button type="submit" class="btn btn-default">Add to cart</button>';
+        echo '<button type="submit" class="btn btn-default" name="submit">Add to cart</button>';
         echo '</form>';
         echo "</div>";
         
