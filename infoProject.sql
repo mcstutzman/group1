@@ -34,11 +34,10 @@ CREATE TABLE orders(
 
 CREATE TABLE orderdetails(
     orderid int unsigned not null,
-    grocerid int unsigned not null,
     productid int unsigned not null,
     quantity int unsigned not null,
     price decimal (6,2),
-    primary key (orderid,grocerid,productid)
+    primary key (orderid,productid)
 );
 
 CREATE TABLE products(
