@@ -17,9 +17,7 @@
 <?php
 include_once('config.php');
 include_once('dbutils.php');
-/*if (isset($_POST['submit'])){
-    
-}*/
+
 ?>
 
 <nav class="navbar navbar-default">

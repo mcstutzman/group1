@@ -61,7 +61,7 @@ if (isset($_POST['submit'])) {
         // first enter record into pizza table
         //
         // put together SQL statement to insert new record
-        $query = "INSERT INTO prodcategory(name, description) VALUES ('$name', '$description');";
+        $query = "INSERT INTO prodcategories(name, description) VALUES ('$name', '$description');";
         
         // connect to the database
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
@@ -169,7 +169,7 @@ if (isset($_POST['submit'])) {
     $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
     
     // set up a query to get information on the pizzas from the database
-    $query = 'SELECT * from prodcategory;';
+    $query = 'SELECT * from prodcategories;';
     
     // run the query
     $result = queryDB($query, $db);

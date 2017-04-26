@@ -68,6 +68,7 @@ CREATE TABLE grocers(
     address varchar (128),
     logo varchar (128),
     url varchar (255),
+    theme varchar (32),
     primary key (id)
 );
 
@@ -75,6 +76,7 @@ CREATE TABLE employees(
     id int unsigned not null auto_increment,
     grocerid int unsigned not null,
     name varchar (64) not null,
+    passwordhash varchar (255) not null,
     email varchar(64) not null,
     phone int (10) not null,
     administrator boolean not null,
@@ -84,18 +86,26 @@ CREATE TABLE employees(
 
 CREATE TABLE prodcategories(
     id int unsigned not null auto_increment,
+    grocerid int unsigned,
     name varchar (64),
     description varchar (255),
     thumbnail varchar (128),
     primary key (id)
 );
 
-insert into prodcategories (name, description, thumbnail) values ('Dairy', 'Milk and milk derived products',"GroceryPics/milkTN.jpg");
-insert into prodcategories (name, description, thumbnail) values ('Produce', 'Fruits and Vegetables', "GroceryPics/bananaTN.jpg");
-insert into prodcategories (name, description, thumbnail) values ('Paper', 'Paper products', "GroceryPics/toiletpaperTN.jpg");
-insert into prodcategories (name, description, thumbnail) values ('Meat', 'Meats and meat products',"GroceryPics/steakTN.png");
-insert into prodcategories (name, description, thumbnail) values ('Candy', 'Sweets and treats', "GroceryPics/herseybarTN.jpg");
-insert into prodcategories (name, description, thumbnail) values ('Other', 'Other', "GroceryPics/catfoodTN.jpg");
+insert into prodcategories (name, description, thumbnail, grocerid) values ('Dairy', 'Milk and milk derived products',"GroceryPics/milkTN.jpg",1);
+insert into prodcategories (name, description, thumbnail, grocerid) values ('Produce', 'Fruits and Vegetables', "GroceryPics/bananaTN.jpg",1);
+insert into prodcategories (name, description, thumbnail, grocerid) values ('Paper', 'Paper products', "GroceryPics/toiletpaperTN.jpg",1);
+insert into prodcategories (name, description, thumbnail, grocerid) values ('Meat', 'Meats and meat products',"GroceryPics/steakTN.png",1);
+insert into prodcategories (name, description, thumbnail, grocerid) values ('Candy', 'Sweets and treats', "GroceryPics/herseybarTN.jpg",1);
+insert into prodcategories (name, description, thumbnail, grocerid) values ('Other', 'Other', "GroceryPics/catfoodTN.jpg",1);
+
+insert into prodcategories (name, description, thumbnail, grocerid) values ('Dairy', 'Milk and milk derived products',"GroceryPics/milkTN.jpg",2);
+insert into prodcategories (name, description, thumbnail, grocerid) values ('Produce', 'Fruits and Vegetables', "GroceryPics/bananaTN.jpg",2);
+insert into prodcategories (name, description, thumbnail, grocerid) values ('Paper', 'Paper products', "GroceryPics/toiletpaperTN.jpg",2);
+insert into prodcategories (name, description, thumbnail, grocerid) values ('Meat', 'Meats and meat products',"GroceryPics/steakTN.png",2);
+insert into prodcategories (name, description, thumbnail, grocerid) values ('Candy', 'Sweets and treats', "GroceryPics/herseybarTN.jpg",2);
+insert into prodcategories (name, description, thumbnail, grocerid) values ('Other', 'Other', "GroceryPics/catfoodTN.jpg",2);
 
 insert into products (name, categoryid, price, description, thumbnail, image, brand) values ('Whole Milk', 1, 3.56, "A&E Whole White Milk", "GroceryPics/milkTN.jpg", "GroceryPics/milk.jpeg", "AE");
 insert into products (name, categoryid, price, description, thumbnail, image, brand) values ('Bananas', 2, 0.77, "For scale", "GroceryPics/bananaTN.jpg", "GroceryPics/banana.jpg", "Chiquita");
@@ -168,5 +178,5 @@ insert into productdetails (productid, grocerid, saleprice, stock) values (16, 1
 
 
 
-insert into grocers (name, email, phone) values ('food.biz', 'boss@food.biz', '(555)555-5555');
-insert into grocers (name, email, phone) values ('scam.food', 'thief@scam.food', '(545)545-5445');
+insert into grocers (name, email, phone, theme) values ('food.biz', 'boss@food.biz', '(555)555-5555', 'superhero');
+insert into grocers (name, email, phone, theme) values ('scam.food', 'thief@scam.food', '(545)545-5445', 'yeti');
