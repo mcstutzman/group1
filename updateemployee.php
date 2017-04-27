@@ -1,139 +1,6 @@
 <?php
-/*
- * This php file enables users to edit a particular pizza
- * It obtains the id for the pizza to update from an id variable passed using the GET method (in the url)
- *
- */
-    include_once('config.php');
-    include_once('dbutils.php');
-    
-    /*
-     * If the user submitted the form with updates, we process the form with this block of code
-     *
-     */
-    if (isset($_POST['submit'])) {
-        // process the update if the form was submitted
-        
-        // get data from form
-        $id = $_POST['id'];
-        if (!isset($id)) {
-            // if for some reason the id didn't post, kick them back to pizza.php
-            header('Location: employees.php');
-            exit;
-        }
-
-        // get data from form
-        $grocerid = $_POST['grocerid'];
-        $email = $_POST['email'];
-        $phone = $_POST['phone'];
-        $admin = $_POST['admin'];
-        $name = $_POST['name'];
-        
-       
-        
-        // variable to keep track if the form is complete (set to false if there are any issues with data)
-        $isComplete = true;
-        
-        // error message we'll give user in case there are issues with data
-        $errorMessage = "";
-        
-        
-        // check each of the required variables in the table        
-        if (!isset($name) || (strlen($name)==0)) {
-        $errorMessage .= "Please enter employee name.\n";
-        $isComplete = false;
-        }
-    
-        if (!$email) {
-            $errorMessage .= " Please enter employee email.";
-            $isComplete = false;
-        } else {
-            $email = makeStringSafe($db, $email);
-        }
-        
-        
-        if (!isset($phone) || (strlen($phone)==0)) {
-            $errorMessage .= "Please enter a contact number.\n";
-            $isComplete = false;
-        
-        // If there's an error, they'll go back to the form so they can fix it
-        
-        if($isComplete) {
-            // if there's no error, then we need to update
-            
-            //
-            // first update pizza record
-            //
-            // put together SQL statement to update pizza
-            $query = "UPDATE employees SET email=$email, phone='$phone', admin='$admin', name='$name' WHERE id=$id;";
-            
-            // connect to the database
-            $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
-            
-            // run the update
-            $result = queryDB($query, $db);        
-                    
-                      
-            // now that we are done, send user back to pizza.php and exit 
-            header("Location: employees.php?successmessage=Successfully updated employee $name");
-            exit;
-        }        
-    } else {
-        //
-        // if the form was not submitted (first time in)
-        //
-    
-        /*
-         * Check if a GET variable was passed with the id for the pizza
-         *
-         */
-        if(!isset($_GET['id'])) {
-            // if the id was not passed through the url
-            
-            // send them out to pizza.php and stop executing code in this page
-            header('Location: employees.php');
-            exit;
-        }
-        
-        /*
-         * Now we'll check to make sure the id passed through the GET variable matches the id of a pizza in the database
-         */
-        
-        // connect to the database
-        $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
-        
-        // set up a query
-        $id = $_GET['id'];
-        $query = "SELECT * FROM pizza WHERE id=$id;";
-        
-        // run the query
-        $result = queryDB($query, $db);
-        
-        // if the id is not in the pizza table, then we need to send the user back to pizza.php
-        if (nTuples($result) == 0) {
-            // send them out to pizza.php and stop executing code in this page
-            header('Location: employees.php');
-            exit;
-        }
-        
-        /*
-         * Now we know we got a valid pizza id through the GET variable
-         */
-        
-        // get data on pizza to fill out form with existing values
-        $row = nextTuple($result);
-        
-        $name = $row['name'];
-        $grocerid = $row['grocerid'];
-        $email = $row['email'];
-        $phone = $row['phone'];
-        $admin = $row['admin'];
-        
-
-    }
+session_start();
 ?>
-
-
 <html>
     <head>
 <!-- Bootstrap links -->
@@ -147,24 +14,154 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>        
         
- <nav class="navbar navbar-default">
+        <title>Employees</title>
+    </head>
+    
+    <body>
+<!--
+
+This is the php code to manage the data submitted by the form
+-->
+
+<?php
+
+// check if form data needs to be processed
+
+// include config and utils files
+include_once('config.php');
+include_once('dbutils.php');
+
+if (!isset($_SESSION['employeeid'])){
+	header('location: grocerlogin.php');
+	exit;
+	}
+
+if (isset($_POST['submit'])) {
+    // if we are here, it means that the form was submitted and we need to process form data
+    
+    // get data from form;
+    $name = $_POST['name'];
+    
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $admin = $_POST['admin'];
+    
+        
+    // variable to keep track if the form is complete (set to false if there are any issues with data)
+    $isComplete = true;
+    
+    // error message we'll give user in case there are issues with data
+    $errorMessage = "";
+    
+	$db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+    // check each of the required variables in the table
+    /*if (!isset($grocerid)) {
+        $errorMessage .= "Please enter an employer.\n";
+        $isComplete = false;
+    }*/
+    
+    if (!isset($name) || (strlen($name)==0)) {
+        $errorMessage .= "Please enter employee name.\n";
+        $isComplete = false;
+    }
+    
+	
+	
+    if (!$email) {
+        $errorMessage .= " Please enter employee email.";
+        $isComplete = false;
+    } else {
+        $email = makeStringSafe($db, $email);
+    }
+    
+    
+    if (!isset($phone) || (strlen($phone)==0)) {
+        $errorMessage .= "Please enter a contact number.\n";
+        $isComplete = false;
+    }
+    
+    // Stop execution and show error if the form is not complete
+    if($isComplete) {
+        // if everything required is complete       
+        //
+        // first enter record into pizza table
+        //
+        // put together SQL statement to insert new record
+        $query = "UPDATE employees SET email = '$email', name = '$name', phone = '$phone', administrator = '$admin' ;";
+        
+        // connect to the database
+        $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+        
+        // run the insert statement
+        $result = queryDB($query, $db);   
+        
+        // we have successfully entered the pizza and its toppings
+        $success = "Successfully updated employee: " . $name;
+        
+        // reset values of variables so the form is cleared
+        unset($grocerid, $name, $email, $phone);
+        
+    }
+}
+if (isset($_GET['id'])){
+	$db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+        
+	// set up a query
+	$id = $_GET['id'];
+	$query = "SELECT * FROM employees WHERE id=$id;";
+	
+	// run the query
+	$result = queryDB($query, $db);
+	$row = nextTuple($result);
+	
+	$name = $row['name'];
+	$email = $row['email'];
+	$phone = $row['phone'];
+	$admin = $row['admin'];
+	
+		
+}
+
+?>
+
+<!-- Menu bar -->
+
+
+<nav class="navbar navbar-default">
   <div class="container-fluid">
     <ul class="nav navbar-nav navbar-left">
-        <li><a href="productEntry.php">Product Entry</a></li>
-        <li class="active"><a href="employees.php">Employees</a></li>
-        <li><a href="orderManager.php">Open Orders</a></li>
+        <li>
+        <?php
+            if (isset($_SESSION['employeeid'])){
+                echo "<a href='logout.php'>log out</a>";
+            }
+            else{
+                echo "<a href='login.php'>log in</a>";
+            }
+        ?>
+        </li>
+        <li class="active"><a href="grocerhome.php">Home</a></li>
+        <form class="navbar-form navbar-left" action="grocerhome.php" method="Get">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" name="search">
+        </div>
+        <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+      </form>
+        
      </ul>
      <ul class="nav navbar-nav navbar-right">
-        <li><a href="logout.php">log out</a></li>
+        <li><a href="employees.php">Add/edit Employees</a></li>
+        <li><a href="manageorders.php">Manage Orders</a></li>
+        <li><a href="productEntry.php">Enter Products</a></li>
+        
      </ul>
   </div>
 </nav>
-
         
 <!-- Title -->
 <div class="row">
     <div class="col-xs-12">
-        <h1>Enter Employee</h1>        
+        <h1>Update Employee</h1>        
     </div>
 </div>
 
@@ -208,11 +205,11 @@
 <div class="row">
     <div class="col-xs-12">
         
-<form action="employees.php" method="post" enctype="multipart/form-data">
+<form action="updateemployee.php" method="post" enctype="multipart/form-data">
 <!-- name -->
 <div class="form-group">
     <label for="name">Name:</label>
-    <input type="text" class="form-control" name="name" value="<?php if($name) { echo $name; } ?>"/>
+    <input type="text" class="form-control" name="name" value="<?php if($name) {echo $name;} ?>"/>
 </div>
 
 
@@ -220,7 +217,7 @@
         <label for="email">Email:</label>
         <input type="email" class="form-control" name="email" value="<?php if($email) {echo $email;} ?>"/>
     </div>
-
+	
 
 <!-- size -->
 <div class="form-group">
@@ -232,10 +229,10 @@
 <div class="form-group">
     <label for="admin">Administrator:</label>
     <label class="radio-inline">
-        <input type="radio" name="admin" value="1" <?php if($admin && isset($admin)) { echo 'checked'; } ?>> Yes
+        <input type="radio" name="admin" value="1" <?php if($admin || !isset($admin)) { echo 'checked'; } ?>> Yes
     </label>    
     <label class="radio-inline">
-        <input type="radio" name="admin" value="0" <?php if(!$admin || !isset($admin)) { echo 'checked'; } ?>> No
+        <input type="radio" name="admin" value="0" <?php if(!$admin && isset($admin)) { echo 'checked'; } ?>> No
     </label>    
 </div>
 
@@ -247,8 +244,8 @@
     </div>
 </div>
 
-       
-       
-        
+
+
+
     </body>
 </html>
