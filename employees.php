@@ -1,3 +1,8 @@
+<?php
+session_start();
+$_SESSION['grocerid']=1;
+$_SESSION['date']= date("Y-m-d");
+?>
 <html>
     <head>
 <!-- Bootstrap links -->
@@ -31,9 +36,10 @@ include_once('dbutils.php');
 if (isset($_POST['submit'])) {
     // if we are here, it means that the form was submitted and we need to process form data
     
-    // get data from form
-    $grocerid = $_POST['grocerid'];
+    // get data from form;
     $name = $_POST['name'];
+    $password = $_POST['password'];
+	$pwconfirm = $_POST['pwConfirm'];
     $email = $_POST['email'];
     $phone = $_POST['phone'];
     $admin = $_POST['admin'];
@@ -55,7 +61,20 @@ if (isset($_POST['submit'])) {
         $errorMessage .= "Please enter employee name.\n";
         $isComplete = false;
     }
-    
+    if (!$password) {
+        $errorMessage .= " Please enter a password.";
+        $isComplete = false;
+    }
+	
+	if (!$pwconfirm) {
+        $errorMessage .= " Please re-enter your password.";
+        $isComplete = false;
+    }
+	
+	if ($password != $pwconfirm) {
+		$errorMessage .= " Your passwords are not the same.  Please try again.";
+		$isComplete = false;
+	}
     if (!$email) {
         $errorMessage .= " Please enter employee email.";
         $isComplete = false;
@@ -72,12 +91,12 @@ if (isset($_POST['submit'])) {
     // Stop execution and show error if the form is not complete
     if($isComplete) {
         // if everything required is complete
-                
+        $pwHash = crypt($password, getSalt());       
         //
         // first enter record into pizza table
         //
         // put together SQL statement to insert new record
-        $query = "INSERT INTO employees(grocerid, name, email, phone, admin) VALUES ('$grocerid', '$name', '$email', '$phone', $admin);";
+        $query = "INSERT INTO employees(grocerid, email, passwordhash ,name, phone, admin) VALUES (".$_SESSION['grocerid'].", '".$email."', '".$pwHash."', '".$name."','".$phone."',$admin);";
         
         // connect to the database
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
@@ -106,16 +125,35 @@ if (isset($_POST['submit'])) {
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <ul class="nav navbar-nav navbar-left">
-        <li><a href="productEntry.php">Product Entry</a></li>
-        <li class="active"><a href="employees.php">Employees</a></li>
-        <li><a href="orderManager.php">Open Orders</a></li>
+        <li>
+        <?php
+            if (isset($_SESSION['employeeid'])){
+                echo "<a href='grocerlogout.php'>log out</a>";
+            }
+            else{
+                echo "<a href='grocerlogin.php'>log in</a>";
+            }
+        ?>
+        </li>
+        <li><?php
+            if (isset($_SESSION['employeeid'])){
+                echo "<a href='grocerhome.php'>Home</a>";
+            }
+            else{
+                echo "<a href='grocerlogin.php'>Home</a>";
+            }
+        ?>
+        
+        
      </ul>
      <ul class="nav navbar-nav navbar-right">
-        <li><a href="logout.php">log out</a></li>
+        <li><a href="employees.php">Employees</a></li>
+        <li><a href="productEntry.php">Products</a></li>
+        <li><a href="orderManager.php">Orders</a></li>
+        
      </ul>
   </div>
 </nav>
-
         
 <!-- Title -->
 <div class="row">
@@ -174,9 +212,20 @@ if (isset($_POST['submit'])) {
 
 <div class="form-group">
         <label for="email">Email:</label>
-        <input type="email" class="form-control" name="email"/>
+        <input type="email" class="form-control" name="email" value="<?php if($email) {echo $email;} ?>"/>
+    </div>
+<!-- password1 -->
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" name="password"/>
     </div>
 
+<!-- password2 -->
+    <div class="form-group">
+        <label for="pwConfirm">Enter password again</label>
+        <input type="password" class="form-control" name="pwConfirm"/>
+    </div>
+	
 
 <!-- size -->
 <div class="form-group">
@@ -191,7 +240,7 @@ if (isset($_POST['submit'])) {
         <input type="radio" name="admin" value="1" <?php if($admin && isset($admin)) { echo 'checked'; } ?>> Yes
     </label>    
     <label class="radio-inline">
-        <input type="radio" name="cheese" value="0" <?php if(!$admin && !isset($admin)) { echo 'checked'; } ?>> No
+        <input type="radio" name="admin" value="0" <?php if(!$admin && !isset($admin)) { echo 'checked'; } ?>> No
     </label>    
 </div>
 

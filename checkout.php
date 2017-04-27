@@ -12,7 +12,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>        
 <?php
 session_start();
-echo var_dump($_SESSION);
+
 include_once('config.php');
 include_once('dbutils.php');
 ?>
@@ -52,7 +52,13 @@ include_once('dbutils.php');
 //
 // Code to handle input from form
 //
-
+if (isset($_POST['checkout'])){
+	$total = $_POST['total'];
+	
+	$db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName); 
+	$insert = "UPDATE orders SET total='$total' WHERE id = ".$_SESSION['orderid'].";";
+	$result = queryDB($insert, $db);
+}
 if (isset($_POST['submit'])) {
     // only run if the form was submitted
     
@@ -97,12 +103,16 @@ if (isset($_POST['submit'])) {
     }    
 	
     if ($isComplete) {		
-		
+		 
 		// put together sql code to insert tuple or record
-		$insert = "UPDATE orders SET deliverydate='$DDate' WHERE id = ".$_SESSION['orderid'].";";
-	
+		$insert = "UPDATE orders SET deliverydate='$DDate', status= 1 WHERE id = ".$_SESSION['orderid'].";";
+		
 		// run the insert statement
 		$result = queryDB($insert, $db);
+		
+		header('location: myOrders.php');
+		unset($_SESSION['orderid']);
+		exit;
 		
 		
 		}
@@ -153,6 +163,10 @@ else{
                 <div class="form-group">
                     <label for="deliverydate">Delivery Date:</label>
                     <input type="date" class="form-control" name="deliverydate"/>
+                </div>
+				<div class="form-group">
+                    <label for="card">Credit Card:</label>
+                    <input type="text" class="form-control"/>
                 </div>
                 
                 <button type="submit" class="btn btn-default" name="submit">Submit</button>

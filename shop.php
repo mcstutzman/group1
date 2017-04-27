@@ -16,7 +16,7 @@
 <body>
 <?php
 session_start();
-echo var_dump($_SESSION);
+
 include_once('config.php');
 include_once('dbutils.php');
 
@@ -29,7 +29,7 @@ if (isset($_POST['submit'])){
     $customerid = $_SESSION['customerid'];
     
     if (!isset($_SESSION['orderid'])){
-        $query = 'INSERT INTO orders (grocerid, customerid) VALUES ('.$grocerid.','.$customerid.');';
+        $query = 'INSERT INTO orders (grocerid, customerid, orderdate, status) VALUES ('.$grocerid.','.$customerid.',"'.$_SESSION['date'].'",0);';
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
         $result = queryDB($query, $db);
         $_SESSION['orderid']= mysqli_insert_id($db);

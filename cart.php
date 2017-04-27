@@ -12,7 +12,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>        
 <?php
 session_start();
-echo var_dump($_SESSION);
+
 include_once('config.php');
 include_once('dbutils.php');
 ?>
@@ -80,7 +80,6 @@ if (isset($_POST['delete'])){
         <th></th>
         <th>Item</th>
         <th>Quantity</th>
-        <th></th>
         <th>Price</th>
         <th></th>
     </thead>
@@ -99,13 +98,14 @@ if (isset($_POST['delete'])){
             echo "<td><a href='productdetails.php?productid=".$row['productid']."'><img src='" . $product['thumbnail'] . "'class='img-responsive'></a></td>";
             echo "<td>" . $product['name'] . "</td>";
             echo '<form action="cart.php" method="post">';
-            echo'<td><div class= "col-xs-2"><div class="form-group">
-                <input type="text" class="form-control" name="quantity" value='. $row['quantity'].'></div><button type="submit" class="btn btn-default" name="edit">Edit</button></div></td>';
+            echo'<td><div class= "col-xs-3"><div class="form-group">
+                <input type="text" class="form-control" name="quantity" value='. $row['quantity'].'></div><button type="submit" class="btn btn-default" name="edit">Edit</button></form></div></td>';
+            
             $itemtotal = $row['quantity'] * $row['price'];
             echo "<td>$" . $itemtotal . "</td>";
             echo '<form action="cart.php" method="post">';
             echo '<input type="hidden" name="id" value='.$row['productid'].'>';
-            echo '<td><button type="submit" class="btn btn-default" name="delete">Delete</button></div></td>';
+            echo '<td><button type="submit" class="btn btn-default" name="delete">Delete</button></form></div></td>';
             echo "</tr> \n";
             $total = $total + $itemtotal;
             }
@@ -114,7 +114,9 @@ if (isset($_POST['delete'])){
         echo '</div>';
         echo '<div class="row">';
         echo '<div class="col-md-offset-10">';
-        echo '<h3>Total: $'.$total.'</h3><a class="btn btn-default" href="checkout.php" role="button">Checkout</a>';
+        echo '<form action="checkout.php" method="post">';
+        echo '<input type="hidden" name="total" value='.$total.'>';
+        echo '<h3>Total: $'.$total.'</h3><button type="submit" class="btn btn-default" name="checkout">Checkout</button></form>';
         echo '</div>';
         echo '</div>';
     }

@@ -1,6 +1,6 @@
 <?php
 	session_start();
-	echo var_dump($_SESSION);
+	
     include_once('config.php');
     include_once('dbutils.php');
     
@@ -129,7 +129,7 @@ if (isset($_POST['submit'])) {
 else{
 	
 	if ($_SESSION['customerid'] == 0){
-		header('location: AccountCreation.php');
+		header('location: login.php');
 		exit;
 	}
 	$db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
