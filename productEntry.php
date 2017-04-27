@@ -21,12 +21,17 @@ This is the php code to manage the data submitted by the form
 -->
 
 <?php
-
+session_start();
 // check if form data needs to be processed
 
 // include config and utils files
 include_once('config.php');
 include_once('dbutils.php');
+
+if (!isset($_SESSION['employeeid'])){
+	header('location: grocerlogin.php');
+	exit;
+	}
 
 if (isset($_POST['submit'])) {
     // if we are here, it means that the form was submitted and we need to process form data
@@ -105,12 +110,30 @@ if (isset($_POST['submit'])) {
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <ul class="nav navbar-nav navbar-left">
-        <li class="active"><a href="productEntry.php">Product Entry</a></li>
-        <li><a href="employees.php">Employees</a></li>
-        <li><a href="orderManager.php">Open Orders</a></li>
+        <li>
+        <?php
+            if (isset($_SESSION['employeeid'])){
+                echo "<a href='logout.php'>log out</a>";
+            }
+            else{
+                echo "<a href='login.php'>log in</a>";
+            }
+        ?>
+        </li>
+        <li class="active"><a href="grocerhome.php">Home</a></li>
+        <form class="navbar-form navbar-left" action="grocerhome.php" method="Get">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" name="search">
+        </div>
+        <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+      </form>
+        
      </ul>
      <ul class="nav navbar-nav navbar-right">
-        <li><a href="logout.php">log out</a></li>
+        <li><a href="employees.php">Add/edit Employees</a></li>
+        <li><a href="manageorders.php">Manage Orders</a></li>
+        <li><a href="productEntry.php">Enter Products</a></li>
+        
      </ul>
   </div>
 </nav>
@@ -178,26 +201,32 @@ if (isset($_POST['submit'])) {
     if (!isset($db)) {
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
     }
-    echo (generateDropdown($db, "prodcategories", "name", "id", $categoryid));        
+    echo (categoryDropdown($db, "prodcategories", "name", "id", $categoryid, $_SESSION['grocerid']));        
     ?>
 </div>
 
 
-<!-- crust -->
 <div class="form-group">
     <label for="brand">Brand:</label>
     <input type="text" class="form-control" name="brand" value="<?php if($brand) { echo $brand; } ?>"/>
 </div>
 
 
-<!-- size -->
 <div class="form-group">
-    <label for="price">Price per Unit:</label>
+    <label for="price">Cost per Unit:</label>
     <input type="number" class="form-control" name="price" value="<?php if($price) { echo $price; } ?>"/>
 </div>
 
+<div class="form-group">
+    <label for="saleprice">Sale Price:</label>
+    <input type="number" class="form-control" name="saleprice" value="<?php if($saleprice) { echo $saleprice; } ?>"/>
+</div>
 
-<!-- cheese -->
+<div class="form-group">
+    <label for="stock">Amount in Stock:</label>
+    <input type="number" class="form-control" name="stock" value="<?php if($stock) { echo $stock; } ?>"/>
+</div>
+
 <div class="form-group">
     <label for="description">Description:</label>
     <textarea class="form-control" rows="3" id="description"></textarea> 
@@ -212,55 +241,7 @@ if (isset($_POST['submit'])) {
 </div>
 
 
-<!-- show contents of pizza table -->
-<div class="row">
-    <div class="col-xs-12">
-        
-<!-- set up html table to show contents -->
-<table class="table table-hover">
-    <!-- headers for table -->
-    <thead>
-        <th>Image</th>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Unit Price</th>
-        <th>Description</th>        
-    </thead>
 
-<?php
-    /*
-     * List all the pizzas in the database
-     *
-     */
-    
-    
-    // connect to the database
-    $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
-    
-    
-    // set up a query to get information on the pizzas from the database
-    $query = 'SELECT products.name, products.price, products.description, products.thumbnail, prodcategories.name as category FROM products, prodcategories WHERE products.categoryid = prodcategories.id;';
-    
-    
-    // run the query
-    $result = queryDB($query, $db);
-    
-    
-    
-    while($row = nextTuple($result)) {
-        echo "\n <tr>";
-        // picture
-        echo "<td><img src='" . $row['thumbnail'] . "'></td>";
-        echo "<td>" . $row['name'] . "</td>";
-        echo "<td>" . $row['category'] . "</td>";
-        echo "<td>" . $row['price'] . "</td>";
-        echo "<td>" . $row['description'] . "</td>";
-               
-        echo "</tr> \n";
-    }
-?>        
-    
-</table>
         
     </div>
 </div>

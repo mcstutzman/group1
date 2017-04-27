@@ -1,7 +1,5 @@
 <?php
 session_start();
-$_SESSION['grocerid']=1;
-$_SESSION['date']= date("Y-m-d");
 
 include_once('config.php');
 include_once('dbutils.php');
@@ -26,11 +24,17 @@ include_once('dbutils.php');
     </head>
     
     <body>
-        
+        <nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <ul class="nav navbar-nav navbar-left">
+            <li><a href="index.php">home</a></li>
+        </ul>
+    </div>
+</nav>
     <!-- Visible title -->
         <div class="row">
             <div class="col-xs-12">
-                <h1>Login</h1>
+                <h1>Employee Login</h1>
             </div>
         </div>
         

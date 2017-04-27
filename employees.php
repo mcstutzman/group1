@@ -1,7 +1,5 @@
 <?php
 session_start();
-$_SESSION['grocerid']=1;
-$_SESSION['date']= date("Y-m-d");
 ?>
 <html>
     <head>
@@ -33,6 +31,11 @@ This is the php code to manage the data submitted by the form
 include_once('config.php');
 include_once('dbutils.php');
 
+if (!isset($_SESSION['employeeid'])){
+	header('location: grocerlogin.php');
+	exit;
+	}
+
 if (isset($_POST['submit'])) {
     // if we are here, it means that the form was submitted and we need to process form data
     
@@ -51,6 +54,7 @@ if (isset($_POST['submit'])) {
     // error message we'll give user in case there are issues with data
     $errorMessage = "";
     
+	$db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
     // check each of the required variables in the table
     /*if (!isset($grocerid)) {
         $errorMessage .= "Please enter an employer.\n";
@@ -96,7 +100,7 @@ if (isset($_POST['submit'])) {
         // first enter record into pizza table
         //
         // put together SQL statement to insert new record
-        $query = "INSERT INTO employees(grocerid, email, passwordhash ,name, phone, admin) VALUES (".$_SESSION['grocerid'].", '".$email."', '".$pwHash."', '".$name."','".$phone."',$admin);";
+        $query = "INSERT INTO employees(grocerid, email, passwordhash, name, phone, administrator) VALUES (".$_SESSION['grocerid'].", '$email', '".$pwHash."', '".$name."','".$phone."','$admin');";
         
         // connect to the database
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
@@ -117,6 +121,7 @@ if (isset($_POST['submit'])) {
     }
 }
 
+
 ?>
 
 <!-- Menu bar -->
@@ -128,28 +133,26 @@ if (isset($_POST['submit'])) {
         <li>
         <?php
             if (isset($_SESSION['employeeid'])){
-                echo "<a href='grocerlogout.php'>log out</a>";
+                echo "<a href='logout.php'>log out</a>";
             }
             else{
-                echo "<a href='grocerlogin.php'>log in</a>";
+                echo "<a href='login.php'>log in</a>";
             }
         ?>
         </li>
-        <li><?php
-            if (isset($_SESSION['employeeid'])){
-                echo "<a href='grocerhome.php'>Home</a>";
-            }
-            else{
-                echo "<a href='grocerlogin.php'>Home</a>";
-            }
-        ?>
-        
+        <li class="active"><a href="grocerhome.php">Home</a></li>
+        <form class="navbar-form navbar-left" action="grocerhome.php" method="Get">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" name="search">
+        </div>
+        <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+      </form>
         
      </ul>
      <ul class="nav navbar-nav navbar-right">
-        <li><a href="employees.php">Employees</a></li>
-        <li><a href="productEntry.php">Products</a></li>
-        <li><a href="orderManager.php">Orders</a></li>
+        <li><a href="employees.php">Add/edit Employees</a></li>
+        <li><a href="manageorders.php">Manage Orders</a></li>
+        <li><a href="productEntry.php">Enter Products</a></li>
         
      </ul>
   </div>
@@ -206,7 +209,7 @@ if (isset($_POST['submit'])) {
 <!-- name -->
 <div class="form-group">
     <label for="name">Name:</label>
-    <input type="text" class="form-control" name="name" value="<?php if($name) { echo $name; } ?>"/>
+    <input type="text" class="form-control" name="name" value="<?php if($name) {echo $name;} ?>"/>
 </div>
 
 
@@ -237,10 +240,10 @@ if (isset($_POST['submit'])) {
 <div class="form-group">
     <label for="admin">Administrator:</label>
     <label class="radio-inline">
-        <input type="radio" name="admin" value="1" <?php if($admin && isset($admin)) { echo 'checked'; } ?>> Yes
+        <input type="radio" name="admin" value="1" <?php if($admin || !isset($admin)) { echo 'checked'; } ?>> Yes
     </label>    
     <label class="radio-inline">
-        <input type="radio" name="admin" value="0" <?php if(!$admin && !isset($admin)) { echo 'checked'; } ?>> No
+        <input type="radio" name="admin" value="0" <?php if(!$admin && isset($admin)) { echo 'checked'; } ?>> No
     </label>    
 </div>
 
@@ -294,7 +297,7 @@ if (isset($_POST['submit'])) {
         echo "<td>" . $row['name'] . "</td>";
         echo "<td>" . $row['email'] . "</td>";
         echo "<td>" . $row['phone'] . "</td>";
-        if ($row['admin']) {
+        if ($row['administrator']) {
             $admin = 'Yes';
         } else {
             $admin = 'No';

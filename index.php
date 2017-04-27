@@ -12,12 +12,19 @@ if (!isset($_SESSION['customerid'])){
     <head>
 <!-- Bootstrap links -->
 <?php
-    $query = 'SELECT theme FROM grocers WHERE id = '.$_SESSION['grocerid'].';';
-    $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
-    $result = queryDB($query, $db);
-    $theme = nextTuple($result);
-    $_SESSION['theme']=$theme['theme'];
-    include_once('ProjectHeader.php');
+    echo var_dump($_SESSION);
+    /*if (!isset($_SESSION['theme'])){
+        echo "1";
+        $query = 'SELECT * FROM grocers where id=1;';
+        echo "2";
+        $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+        $result = queryDB($query, $db);
+        $theme = nextTuple($result);
+        echo "3";
+        $_SESSION['theme']=$theme['theme'];
+    }
+    echo var_dump($_SESSION);
+    include_once('ProjectHeader.php');*/
 ?>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -26,7 +33,7 @@ if (!isset($_SESSION['customerid'])){
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
 <!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>        
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>       
         
         <title>Food.biz</title>
     </head>
@@ -85,7 +92,7 @@ include_once('dbutils.php');
     </div>
     <div class="col-xs-12 col-md-6">
     <?php
-        $query = 'SELECT * from prodcategories;';
+        $query = 'SELECT * from prodcategories where grocerid = '.$_SESSION['grocerid'].';';
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
         $result = queryDB($query, $db);
         while ($cat = nextTuple($result)){
@@ -93,12 +100,21 @@ include_once('dbutils.php');
                     <a href="shop.php?categoryid='.$cat['id'].'&grocerid='.$_SESSION['grocerid'].'" class="thumbnail">
                         <img src="'.$cat['thumbnail'].'" alt="'.$cat['name'].'"></a>
                     <div class="caption">
-                    <h3><a href="shop.php?categoryid='.$cat['id'].'&grocerid=1">'.$cat['name'].'</a></h3>
+                    <h3><a href="shop.php?categoryid='.$cat['id'].'&grocerid='.$_SESSION['grocerid'].'">'.$cat['name'].'</a></h3>
                     </div>
                     </div>';
         }
         ?>
     </div>
- 
+</div>
     </body>
+    <footer>
+      <nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="grocerlogin.php">Employee Login</a></li>
+        </ul>
+    </div>
+</nav>  
+    </footer>
 </html>
