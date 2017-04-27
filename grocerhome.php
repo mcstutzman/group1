@@ -2,51 +2,35 @@
     <head>
 <!-- Bootstrap links -->
 
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>        
-        
-        <title>Food.biz</title>
-    </head>
-<body>
 <?php
 session_start();
 
 include_once('config.php');
 include_once('dbutils.php');
-
+include 'ProjectHeader.php';
+?>
+        
+        <title>Food.biz</title>
+    </head>
+<body>
+<?php
 if (!isset($_SESSION['employeeid'])){
 	header('location: grocerlogin.php');
 	exit;
 	}
+
 if (isset($_POST['submit'])){
+    include_once('config.php');
+	include_once('dbutils.php');
+    $theme = $_POST['theme'];
     
-    $productid = $_POST['id'];
-    $quantity = $_POST['quantity'];
-    $price = $_POST['price'];
-    $grocerid = $_SESSION['grocerid'];
-    $customerid = $_SESSION['customerid'];
-    
-    if (!isset($_SESSION['orderid'])){
-        $query = 'INSERT INTO orders (grocerid, customerid, orderdate, status) VALUES ('.$grocerid.','.$customerid.',"'.$_SESSION['date'].'",0);';
-        $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
-        $result = queryDB($query, $db);
-        $_SESSION['orderid']= mysqli_insert_id($db);
-        $query2 = 'INSERT INTO orderdetails (orderid, productid, quantity, price) VALUES ('.$_SESSION['orderid'].','.$productid.','.$quantity.','.$price.');';
-        $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
-        $result2 = queryDB($query2, $db);
-    }
-    else {
-        $query2 = 'INSERT INTO orderdetails (orderid, productid, quantity, price) VALUES ('.$_SESSION['orderid'].','.$productid.','.$quantity.','.$price.');';
-        $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
-        $result2 = queryDB($query2, $db);
-    }
-    $success = "Added item to cart";
+	$db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
+	$query = "UPDATE grocers SET theme= '$theme' where id= ".$_SESSION['grocerid'].";";
+	$result = queryDB($query, $db);
+   
+	$_SESSION['theme'] = $theme;
+	$success = "Theme set";
+	header('location: grocerhome.php');
 }
 ?>
 
@@ -84,13 +68,49 @@ if (isset($_POST['submit'])){
 <?php
     if (isset($success)) {
         // for successes after the form was submitted
+		header('redirect.php');
         echo '<div class="alert alert-success" role="alert">';
         echo ($success);
         echo '</div>';
         }
 ?>
 <div class="row">&nbsp</div>
-<div class="row">&nbsp</div>
+<div class="row">
+	<div class= "col-xs-12">
+		
+	<form action="grocerhome.php" method="post">
+	<div class="form-group">
+    <label for="theme">Select Theme:</label>
+    <label class="radio-inline">
+        <input type="radio" name="theme" value="superhero" ><img src=https://bootswatch.com/superhero/thumbnail.png style="width: 100px ;height: 60px">
+    </label>
+	&nbsp
+    <label class="radio-inline">
+        <input type="radio" name="theme" value="yeti"><img src=https://bootswatch.com/yeti/thumbnail.png style="width: 100px ;height: 60px">
+    </label>
+	&nbsp
+	<label class="radio-inline">
+        <input type="radio" name="theme" value="united"><img src=https://bootswatch.com/united/thumbnail.png style="width: 100px ;height: 60px">
+    </label>
+	&nbsp
+	<label class="radio-inline">
+        <input type="radio" name="theme" value="spacelab"><img src=https://bootswatch.com/spacelab/thumbnail.png style="width: 100px ;height: 60px">
+    </label>
+	&nbsp
+	<label class="radio-inline">
+        <input type="radio" name="theme" value="journal"><img src=https://bootswatch.com/journal/thumbnail.png style="width: 100px ;height: 60px">
+    </label>
+	&nbsp
+	<label class="radio-inline">
+        <input type="radio" name="theme" value="cerulean"><img src=https://bootswatch.com/cerulean/thumbnail.png style="width: 100px ;height: 60px">
+    </label>
+	&nbsp
+
+<button type="submit" class="btn btn-default" name="submit">Update Theme</button>
+</div>
+</form>
+	</div>
+	
 <div class="row">
     <div class = "col-md-1">
         <div class="list-group">
@@ -99,7 +119,7 @@ if (isset($_POST['submit'])){
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
         $result = queryDB($query, $db);
         while ($cat = nextTuple($result)){
-            echo '<a href="shop.php?categoryid='.$cat['id'].'" class="list-group-item">'.$cat['name'].'</a>';
+            echo '<a href="grocerhome.php?categoryid='.$cat['id'].'" class="list-group-item">'.$cat['name'].'</a>';
         }
         ?>
         </div>
@@ -111,10 +131,10 @@ if (isset($_POST['submit'])){
     <!-- headers for table -->
     <thead>
         <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>        
+        <th>Brand</th>
+        <th>Name</th>
+        <th>Sale Price</th>
+        <th>Stock</th>        
     </thead>
 
 <?php
@@ -153,19 +173,8 @@ if (isset($_POST['submit'])){
         echo "<td>" . $row['name'] . "</td>";
         
         echo "<td>$".$row['saleprice']."</td>";
+        echo "<td>".$row['stock']."</td>";
         
-        echo '<form action="shop.php" method="post">';
-        echo '<input type="hidden" name="id" value='.$row['id'].'>';
-        echo '<input type="hidden" name="price" value='.$row['saleprice'].'>';
-        echo '<td><select class="form-control" name="quantity">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                </select></td>';
-        echo '<td><button type="submit" class="btn btn-default" name="submit">Add to cart</button></td>';
-        echo '</form>';
       
         
                
