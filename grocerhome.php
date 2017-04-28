@@ -18,6 +18,10 @@ if (!isset($_SESSION['employeeid'])){
 	header('location: grocerlogin.php');
 	exit;
 	}
+if ($_SESSION['admin'] == 0){
+	header('location: manageorders.php');
+	exit;
+}
 
 if (isset($_POST['submit'])){
     include_once('config.php');

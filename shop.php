@@ -147,8 +147,8 @@ if (isset($_POST['submit'])){
         echo "<td>$".$row['saleprice']."</td>";
         
         echo '<form action="shop.php" method="post">';
-        echo '<input type="hidden" name="id" value='.$row['id'].'>';
-        echo '<input type="hidden" name="price" value='.$row['saleprice'].'>';
+        echo '<input type="hidden" name="id" value='.$row['id'].'/>';
+        echo '<input type="hidden" name="price" value='.$row['saleprice'].'/>';
         echo '<td><select class="form-control" name="quantity">
                 <option>1</option>
                 <option>2</option>
@@ -156,6 +156,12 @@ if (isset($_POST['submit'])){
                 <option>4</option>
                 <option>5</option>
                 </select></td>';
+        /*if (isset($_GET['categoryid'])){
+            echo '<input type="hidden" name= "catid" value ='.$_GET['categoryid'].'/>';
+        }
+        elseif ($search){
+            echo '<input type="hidden" name= "search" value ='.$search.'/>';
+        }*/
         echo '<td><button type="submit" class="btn btn-default" name="submit">Add to cart</button></td>';
         echo '</form>';
       

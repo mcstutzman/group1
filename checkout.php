@@ -60,6 +60,7 @@ if (isset($_POST['submit'])) {
 	$address = $_POST['address'];
 	$phone = $_POST['phone'];
     $DDate = $_POST['deliverydate'];
+	$d = strtotime("+2 days");
     
    // connect to the database
     $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);    
@@ -89,8 +90,9 @@ if (isset($_POST['submit'])) {
         $errorMessage .= "Please enter your phone number.\n";
         $isComplete = false;
     }
-	if (!isset($DDate)) {
-        $errorMessage .= "Please enter a delivery date.\n";
+	
+	if ($DDate < $_SESSION['date'] || $DDate > date("Y-m-d", $d)) {
+        $errorMessage .= "Please enter a valid delivery date.\n";
         $isComplete = false;
     }    
 	
@@ -126,6 +128,18 @@ else{
 	$phone = $row['phone'];
 }
 ?>
+<div class="row">
+    <div class="col-xs-12">
+<?php
+    if (isset($isComplete) && !$isComplete) {
+        echo '<div class="alert alert-danger" role="alert">';
+        echo ($errorMessage);
+        echo '</div>';
+    }
+?>            
+    </div>
+</div>
+
 <!-- form for inputting data -->
 <div class="row">
     <div class="col-md-2"> </div>   

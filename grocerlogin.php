@@ -84,7 +84,7 @@ if (isset($_POST['submit'])) {
 			
 			// start a session
 			if (session_start()) {
-				$_SESSION['email'] = $email;
+				$_SESSION['admin'] = $row['administrator'];
 				$_SESSION['employeeid'] = $row['id'];
 				header('Location: grocerhome.php');
 				exit;

@@ -81,17 +81,17 @@ include_once('dbutils.php');
             $itemtotal = $row['quantity'] * $row['price'];
             echo "<td>$" . $itemtotal . "</td>";
             echo "</tr> \n";
-            $total = $total + $itemtotal;
-            echo '</table>';
-            echo '</div>';
-            echo '</div>';
-            echo '<div class="row">';
-            echo '<div class="col-md-offset-10">';
-            echo '<h3>Total: $'.$total.'</h3>';
-            echo '</div>';
-            echo '</div>';
+            
             }
-        
+        $total = $total + $itemtotal;
+        echo '</table>';
+        echo '</div>';
+        echo '</div>';
+        echo '<div class="row">';
+        echo '<div class="col-md-offset-10">';
+        echo '<h3>Total: $'.$total.'</h3>';
+        echo '</div>';
+        echo '</div>';
     }
 ?>
 

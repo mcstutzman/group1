@@ -57,7 +57,7 @@ if (!isset($_SESSION['customerid'])){
   </div>
 </nav>
 <h1>Food.biz</h1>        
-    
+<div class="container">   
 <div class="jumbotron">
     <div class= "container">
         <h1>Welcome to Food.biz!</h1>
@@ -66,7 +66,7 @@ if (!isset($_SESSION['customerid'])){
     </div>
 </div>
 <!-- product categories -->
-
+</div>
 <div class="row">
     <div class="col-md-3">
         
@@ -88,6 +88,7 @@ if (!isset($_SESSION['customerid'])){
         ?>
     </div>
 </div>
+
     </body>
     <footer>
       <nav class="navbar navbar-default">

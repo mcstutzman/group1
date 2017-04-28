@@ -30,6 +30,10 @@ if (!isset($_SESSION['employeeid'])){
 	header('location: grocerlogin.php');
 	exit;
 	}
+if (isset($_SESSION['admin']) == 0){
+	header('location: manageorders.php');
+	exit;
+}
 
 if (isset($_POST['submit'])) {
     // if we are here, it means that the form was submitted and we need to process form data

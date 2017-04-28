@@ -36,11 +36,11 @@ if (isset($_POST['submit'])) {
     
     // get data from form;
     $name = $_POST['name'];
-    
+    $id = $_POST['id'];
     $email = $_POST['email'];
     $phone = $_POST['phone'];
     $admin = $_POST['admin'];
-    
+    echo var_dump($_POST);
         
     // variable to keep track if the form is complete (set to false if there are any issues with data)
     $isComplete = true;
@@ -82,7 +82,7 @@ if (isset($_POST['submit'])) {
         // first enter record into pizza table
         //
         // put together SQL statement to insert new record
-        $query = "UPDATE employees SET email = '$email', name = '$name', phone = '$phone', administrator = '$admin' ;";
+        $query = "UPDATE employees SET email = '$email', name = '$name', phone = '$phone', administrator = '$admin' WHERE id = '$id';";
         
         // connect to the database
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
@@ -230,6 +230,7 @@ if (isset($_GET['id'])){
         <input type="radio" name="admin" value="0" <?php if(!$admin && isset($admin)) { echo 'checked'; } ?>> No
     </label>    
 </div>
+<input type="hidden" name="id" value="<?php echo $id ?>"/>
 
 <button type="submit" class="btn btn-default" name="submit">Save</button>
 
