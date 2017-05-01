@@ -38,6 +38,8 @@ if (isset($_POST['submit'])) {
     $brand = $_POST['brand'];
     $price = $_POST['price'];
     $description = $_POST['description'];
+	$saleprice = $_POST['saleprice'];
+	$stock = $_POST['stock'];
     $image = $_POST['image'];
     $thumbnail = $_POST['thumb'];
         
@@ -77,15 +79,60 @@ if (isset($_POST['submit'])) {
         // first enter record into pizza table
         //
         // put together SQL statement to insert new record
-        $query = "INSERT INTO pizza(categoryid, name, brand, price, description) VALUES ('$categoryid', '$name', '$brand', $price, '$description');";
-        
+        $query1 = "INSERT INTO products(categoryid, name, brand, price, description) VALUES ('$categoryid', '$name', '$brand', $price, '$description');";
+        $query2 = "INSERT INTO productcategories(saleprice, stock) VALUES ('$saleprice','$stock');";
         // connect to the database
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
         
         // run the insert statement
-        $result = queryDB($query, $db);
+        $result1 = queryDB($query1, $db);
+		
+		$productid = mysqli_insert_id($db);
+		
+		$result2 = queryDB($query2, $db);
+		
+		
         
-        
+        if ($_FILES['image']['size'] > 0) {
+            // if there is a picture
+            
+            // copy image to images directory
+            $tmpName = $_FILES['image']['tmp_name'];
+            $fileName = $_FILES['image']['name'];
+            
+            $newFileName = $imagesDir . $productid . $fileName;
+            
+            // we create a filename that includes the pizza id, followed by the filename ($imagesDir comes from config.php)
+            if (move_uploaded_file($tmpName, $newFileName)) {
+                // since we successfully copied the file, we now enter its filename in the pizza table
+                $query = "UPDATE product SET image = '$newFileName' WHERE id=$productid;";
+            
+                // run insert query
+                queryDB($query, $db);
+            } else {
+                echo "error copying image";
+            }
+    	}
+		if ($_FILES['thumb']['size'] > 0) {
+            // if there is a picture
+            
+            // copy image to images directory
+            $tmpName = $_FILES['thumb']['tmp_name'];
+            $fileName = $_FILES['thumb']['name'];
+            
+            $newFileName = $imagesDir . $productid . $fileName;
+            
+            // we create a filename that includes the pizza id, followed by the filename ($imagesDir comes from config.php)
+            if (move_uploaded_file($tmpName, $newFileName)) {
+                // since we successfully copied the file, we now enter its filename in the pizza table
+                $query = "UPDATE product SET thumbnail = '$newFileName' WHERE id=$productid;";
+            
+                // run insert query
+                queryDB($query, $db);
+            } else {
+                echo "error copying thumbnail";
+            }
+    	}
                 
 
 
@@ -94,7 +141,7 @@ if (isset($_POST['submit'])) {
         $success = "Successfully entered new product: " . $name;
         
         // reset values of variables so the form is cleared
-        unset($categoryid, $name, $price, $description);
+        unset($categoryid, $name, $price, $description, $saleprice, $stock);
     }
 }
 
@@ -227,6 +274,17 @@ if (isset($_POST['submit'])) {
     <label for="description">Description:</label>
     <textarea class="form-control" rows="3" id="description"></textarea> 
 </div>
+
+<div class="form-group">
+    <label for="thumb">Thumbnail</label>
+    <input type="file" class="form-control" name="thumb"/>
+</div>
+
+<div class="form-group">
+    <label for="image">Image</label>
+    <input type="file" class="form-control" name="image"/>
+</div>
+
 
 <button type="submit" class="btn btn-default" name="submit">Save</button>
 

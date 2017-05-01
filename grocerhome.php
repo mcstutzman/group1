@@ -172,7 +172,7 @@ if (isset($_POST['submit'])){
     while($row = nextTuple($result)) {
         echo "\n <tr>";
         // picture
-        echo "<td><a href='productdetails.php?productid=".$row['id']."'><img src='" . $row['thumbnail'] . "'class='img-responsive'></a></td>";
+        echo "<td><a href='updateproducts.php?productid=".$row['id']."'><img src='" . $row['thumbnail'] . "'class='img-responsive'></a></td>";
         echo "<td>" . $row['brand']. "</td>";
         echo "<td>" . $row['name'] . "</td>";
         
