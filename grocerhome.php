@@ -119,7 +119,7 @@ if (isset($_POST['submit'])){
     <div class = "col-md-1">
         <div class="list-group">
         <?php
-        $query = 'SELECT * from prodcategories where grocerid= '.$_SESSION['grocerid'].';';
+        $query = 'SELECT * from prodcategories;';
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
         $result = queryDB($query, $db);
         while ($cat = nextTuple($result)){
@@ -154,14 +154,14 @@ if (isset($_POST['submit'])){
     
     // set up a query to get information on the pizzas from the database
     if ($_GET['categoryid']){
-        $query = 'SELECT * FROM products, productdetails WHERE products.id = productdetails.productid AND categoryid = '.$_GET['categoryid'].' AND grocerid = '.$_SESSION['grocerid'].';';
+        $query = 'SELECT * FROM products WHERE categoryid = '.$_GET['categoryid'].';';
         }
     elseif ($search){
-        $query = 'SELECT * FROM products, productdetails WHERE products.id = productdetails.productid AND grocerid = '.$_SESSION['grocerid'].' HAVING name LIKE "%'.$search.'%" OR description LIKE "%'.$search.'%" OR brand LIKE "%'.$search.'%";';
+        $query = 'SELECT * FROM products WHERE name LIKE "%'.$search.'%" OR description LIKE "%'.$search.'%" OR brand LIKE "%'.$search.'%";';
         
         }
     else{
-        $query = 'SELECT * FROM products, productdetails WHERE products.id = productdetails.productid AND grocerid = '.$_SESSION['grocerid'].';';
+        $query = 'SELECT * FROM products;';
         }
     
     // run the query
@@ -175,12 +175,11 @@ if (isset($_POST['submit'])){
         echo "<td><a href='updateproducts.php?productid=".$row['id']."'><img src='" . $row['thumbnail'] . "'class='img-responsive'></a></td>";
         echo "<td>" . $row['brand']. "</td>";
         echo "<td>" . $row['name'] . "</td>";
-        
-        echo "<td>$".$row['saleprice']."</td>";
-        echo "<td>".$row['stock']."</td>";
-        
-      
-        
+        $pricequery = 'SELECT * FROM productdetails WHERE productid = '.$row['id'].' AND grocerid = '.$_SESSION['grocerid'].';';
+		$priceresult = queryDB($pricequery, $db);
+		$price = nextTuple($priceresult);
+        echo "<td>$".$price['saleprice']."</td>";
+        echo "<td>".$price['stock']."</td>";        
                
         echo "</tr> \n";
     }

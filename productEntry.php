@@ -80,7 +80,7 @@ if (isset($_POST['submit'])) {
         //
         // put together SQL statement to insert new record
         $query1 = "INSERT INTO products(categoryid, name, brand, price, description) VALUES ('$categoryid', '$name', '$brand', $price, '$description');";
-        $query2 = "INSERT INTO productcategories(saleprice, stock) VALUES ('$saleprice','$stock');";
+        
         // connect to the database
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
         
@@ -88,6 +88,8 @@ if (isset($_POST['submit'])) {
         $result1 = queryDB($query1, $db);
 		
 		$productid = mysqli_insert_id($db);
+		
+		$query2 = "INSERT INTO productdetails(productid, grocerid, saleprice, stock) VALUES ('$productid', ".$_SESSION['grocerid'].", '$saleprice', '$stock');";
 		
 		$result2 = queryDB($query2, $db);
 		
@@ -163,7 +165,7 @@ if (isset($_POST['submit'])) {
             }
         ?>
         </li>
-        <li class="active"><a href="grocerhome.php">Home</a></li>
+        <li><a href="grocerhome.php">Home</a></li>
         <form class="navbar-form navbar-left" action="grocerhome.php" method="Get">
         <div class="form-group">
           <input type="text" class="form-control" placeholder="Search" name="search">
@@ -175,7 +177,7 @@ if (isset($_POST['submit'])) {
      <ul class="nav navbar-nav navbar-right">
         <li><a href="employees.php">Add/edit Employees</a></li>
         <li><a href="manageorders.php">Manage Orders</a></li>
-        <li><a href="productEntry.php">Enter Products</a></li>
+        <li class="active"><a href="productEntry.php">Enter Products</a></li>
         
      </ul>
   </div>
@@ -244,7 +246,7 @@ if (isset($_POST['submit'])) {
     if (!isset($db)) {
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
     }
-    echo (categoryDropdown($db, "prodcategories", "name", "id", $categoryid, $_SESSION['grocerid']));        
+    echo (generateDropdown($db, "prodcategories", "name", "id", $categoryid));        
     ?>
 </div>
 

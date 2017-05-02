@@ -55,7 +55,7 @@ if (isset($_POST['submit'])){
             }
         ?>
         </li>
-        <li class="active"><a href="index.php">Home</a></li>
+        <li><a href="index.php">Home</a></li>
         <form class="navbar-form navbar-left" action="shop.php" method="Get">
         <div class="form-group">
           <input type="text" class="form-control" placeholder="Search" name="search">
@@ -87,7 +87,7 @@ if (isset($_POST['submit'])){
     <div class = "col-md-1">
         <div class="list-group">
         <?php
-        $query = 'SELECT * from prodcategories where grocerid= '.$_SESSION['grocerid'].';';
+        $query = 'SELECT * from prodcategories;';
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
         $result = queryDB($query, $db);
         while ($cat = nextTuple($result)){
@@ -147,8 +147,8 @@ if (isset($_POST['submit'])){
         echo "<td>$".$row['saleprice']."</td>";
         
         echo '<form action="shop.php" method="post">';
-        echo '<input type="hidden" name="id" value='.$row['id'].'/>';
-        echo '<input type="hidden" name="price" value='.$row['saleprice'].'/>';
+        echo '<input type="hidden" name="id" value='.$row['id'].'>';
+        echo '<input type="hidden" name="price" value='.$row['saleprice'].'>';
         echo '<td><select class="form-control" name="quantity">
                 <option>1</option>
                 <option>2</option>

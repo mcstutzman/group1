@@ -15,14 +15,20 @@ include_once('config.php');
 include_once('dbutils.php');
 
 if (isset($_POST['edit'])){
+    echo var_dump($_POST);
     $id = $_POST['id'];
     $desc = $_POST['description'];
     $stock = $_POST['stock'];
     $price = $_POST['saleprice'];
+    $newproduct = $_POST['newproduct'];
     
     $query1 = "UPDATE products SET description = '$desc' WHERE id = '$id';";
-    $query2 = "UPDATE productdetails SET stock = '$stock', saleprice = '$price' where productid = '$id' AND grocerid = ".$_SESSION['grocerid'].";";
-        
+    
+    if ($newproduct==1){
+        $query2 = "INSERT INTO productdetails(productid, grocerid, saleprice, stock) VALUES ('$id', ".$_SESSION['grocerid'].", '$price', '$stock');";
+    }else{
+        $query2 = "UPDATE productdetails SET stock = '$stock', saleprice = '$price' where productid = '$id' AND grocerid = ".$_SESSION['grocerid'].";";
+    }
     // connect to the database
     $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
     
@@ -49,7 +55,7 @@ if (isset($_POST['edit'])){
             }
         ?>
         </li>
-        <li class="active"><a href="grocerhome.php">Home</a></li>
+        <li><a href="grocerhome.php">Home</a></li>
         <form class="navbar-form navbar-left" action="grocerhome.php" method="Get">
         <div class="form-group">
           <input type="text" class="form-control" placeholder="Search" name="search">
@@ -85,22 +91,28 @@ if (isset($_POST['edit'])){
     <div class= "col-md-2">
         <?php
         $productid = $_GET['productid'];
-        $query = 'SELECT * FROM products, productdetails WHERE products.id = productdetails.productid and grocerid = '.$_SESSION['grocerid'].' HAVING id ='.$productid.';';
+        $query1 = 'SELECT * FROM products WHERE id ='.$productid.';';
+        $query2 = 'SELECT * FROM productdetails WHERE productid = '.$productid.' and grocerid = '.$_SESSION['grocerid'].';';
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
-        $result = queryDB($query, $db);
-        $product = nextTuple($result);
+        $result1 = queryDB($query1, $db);
+        $result2 = queryDB($query2, $db);
+        $product = nextTuple($result1);
+        $product2 = nextTuple($result2);
         echo "<img src=".$product['image'].">";
         echo "</div>";
         echo "<div class= 'col-md-8'>";
         echo "<h2>".$product['brand']." ".$product['name']."</h2>\r\n";
         echo '<form class="form-inline" action="updateproducts.php" method="post">';
-        echo '<input type="hidden" name="id" value='.$product['productid'].'>';
+        echo '<input type="hidden" name="id" value='.$productid.'>';
+        if (!isset($product2['saleprice'])){
+            echo '<input type="hidden" name="newproduct" value= 1>';
+        }
         echo '<label for="description">Description</label>';
         echo' <div class="form-group"><input type="text" class="form-control" name="description" value='. $product['description'].'></div>';
         echo '<label for="stock">Stock</label>';
-        echo' <div class="form-group"><input type="text" class="form-control" name="stock" value='. $product['stock'].'></div>';
+        echo' <div class="form-group"><input type="text" class="form-control" name="stock" value='. $product2['stock'].'></div>';
         echo '<label for="saleprice">Saleprice</label>';
-        echo '<div class="form-group">$<input type="text" class="form-control" name="saleprice" value='. $product['saleprice'].'></div><button type="submit" class="btn btn-default" name="edit">Edit</button></form></div>';
+        echo '<div class="form-group">$<input type="text" class="form-control" name="saleprice" value='. $product2['saleprice'].'></div><button type="submit" class="btn btn-default" name="edit">Edit</button></form></div>';
         echo "</div>";
         
         

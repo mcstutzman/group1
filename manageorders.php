@@ -37,7 +37,7 @@ if (isset($_POST['submit'])){
             }
         ?>
         </li>
-        <li class="active"><a href="grocerhome.php">Home</a></li>
+        <li><a href="grocerhome.php">Home</a></li>
         <?php
         if ($_SESSION['admin']==1){
             echo '<form class="navbar-form navbar-left" action="grocerhome.php" method="Get">
@@ -53,10 +53,10 @@ if (isset($_POST['submit'])){
         <?php
         if ($_SESSION['admin']==1){
         echo'<li><a href="employees.php">Add/edit Employees</a></li>
-        <li><a href="manageorders.php">Manage Orders</a></li>
+        <li class="active"><a href="manageorders.php">Manage Orders</a></li>
         <li><a href="productEntry.php">Enter Products</a></li>';
         }else{
-            echo '<li><a href="manageorders.php">Manage Orders</a></li>';
+            echo '<li class="active"><a href="manageorders.php">Manage Orders</a></li>';
         }
         ?>
      </ul>

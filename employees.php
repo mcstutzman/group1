@@ -139,7 +139,7 @@ if (isset($_POST['submit'])) {
             }
         ?>
         </li>
-        <li class="active"><a href="grocerhome.php">Home</a></li>
+        <li><a href="grocerhome.php">Home</a></li>
         <form class="navbar-form navbar-left" action="grocerhome.php" method="Get">
         <div class="form-group">
           <input type="text" class="form-control" placeholder="Search" name="search">
@@ -149,7 +149,7 @@ if (isset($_POST['submit'])) {
         
      </ul>
      <ul class="nav navbar-nav navbar-right">
-        <li><a href="employees.php">Add/edit Employees</a></li>
+        <li class="active"><a href="employees.php">Add/edit Employees</a></li>
         <li><a href="manageorders.php">Manage Orders</a></li>
         <li><a href="productEntry.php">Enter Products</a></li>
         

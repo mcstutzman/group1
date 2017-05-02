@@ -18,7 +18,7 @@ if (!isset($_SESSION['customerid'])){
 ?>
        
         
-        <title>Food.biz</title>
+        <title><?php echo $_SESSION['grocername'] ?></title>
     </head>
     
     <body>
@@ -73,7 +73,7 @@ if (!isset($_SESSION['customerid'])){
     </div>
     <div class="col-xs-12 col-md-6">
     <?php
-        $query = 'SELECT * from prodcategories where grocerid = '.$_SESSION['grocerid'].';';
+        $query = 'SELECT * from prodcategories;';
         $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
         $result = queryDB($query, $db);
         while ($cat = nextTuple($result)){

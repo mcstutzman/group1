@@ -23,7 +23,7 @@ include_once('dbutils.php');
             }
         ?>
         </li>
-        <li class="active"><a href="index.php">Home</a></li>
+        <li><a href="index.php">Home</a></li>
         <form class="navbar-form navbar-left" action="shop.php" method="Get">
         <div class="form-group">
           <input type="text" class="form-control" placeholder="Search" name="search">
@@ -35,7 +35,7 @@ include_once('dbutils.php');
      <ul class="nav navbar-nav navbar-right">
         <li><a href="myaccount.php">Account</a></li>
         <li><a href="myOrders.php">Orders</a></li>
-        <li><a href="cart.php">Cart</a></li>
+        <li class="active"><a href="cart.php">Cart</a></li>
         
      </ul>
   </div>

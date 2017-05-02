@@ -24,7 +24,7 @@ include_once('dbutils.php');
             }
         ?>
         </li>
-        <li class="active"><a href="index.php">Home</a></li>
+        <li><a href="index.php">Home</a></li>
         <form class="navbar-form navbar-left" action="shop.php" method="Get">
         <div class="form-group">
           <input type="text" class="form-control" placeholder="Search" name="search">
