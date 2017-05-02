@@ -97,9 +97,8 @@ include_once('dbutils.php');
             $itemtotal = $row['quantity'] * $row['price'];
             echo "<td>$" . $itemtotal . "</td>";
             echo "</tr> \n";
-            
+            $total = $total + $itemtotal;
             }
-        $total = $total + $itemtotal;
         echo '</table>';
         echo '</div>';
         echo '</div>';

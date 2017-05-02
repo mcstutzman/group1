@@ -44,8 +44,9 @@ include_once('dbutils.php');
 <?php 
 if (isset($_POST['edit'])){
     $quant = $_POST['quantity'];
+    $prod = $_POST['id'];
     
-    $query = "UPDATE orderdetails SET quantity= $quant WHERE orderid = ".$_SESSION['orderid'].";";
+    $query = "UPDATE orderdetails SET quantity= $quant WHERE productid = '$prod' AND orderid = ".$_SESSION['orderid'].";";
     $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);
     $result = queryDB($query, $db);
 }
@@ -91,6 +92,7 @@ if (isset($_POST['delete'])){
             echo "<td><a href='productdetails.php?productid=".$row['productid']."'><img src='" . $product['thumbnail'] . "'class='img-responsive'></a></td>";
             echo "<td>" . $product['name'] . "</td>";
             echo '<form action="cart.php" method="post">';
+            echo '<input type="hidden" name="id" value='.$row['productid'].'>';
             echo'<td><div class= "col-xs-3"><div class="form-group">
                 <input type="text" class="form-control" name="quantity" value='. $row['quantity'].'></div><button type="submit" class="btn btn-default" name="edit">Edit</button></form></div></td>';
             
