@@ -70,7 +70,7 @@ if (isset($_POST['submit'])) {
     }
     
     // get the hashed password from the user with the email that got entered
-    $query = "SELECT * FROM employees WHERE email='" . $email . "' and grocerid = ".$_SESSION['grocerid'].";";
+    $query = "SELECT * FROM employees WHERE email='" . $email . "' having grocerid = ".$_SESSION['grocerid'].";";
     $result = queryDB($query, $db);
     if (nTuples($result) > 0) {
         // there is an account that corresponds to the email that the user entered

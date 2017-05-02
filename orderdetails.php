@@ -47,6 +47,22 @@ include_once('dbutils.php');
         echo "<h1>Order #".$_GET['id']."</h1>"
     
     ?>
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-6">
+        <h3>
+        <?php
+            $db = connectDB($DBHost, $DBUser, $DBPasswd, $DBName);    
+            $query = 'SELECT * FROM customers WHERE id = '.$_SESSION['customerid'].';';    
+            $result = queryDB($query, $db);
+            $customer = nextTuple($result);
+            echo $customer['name'].'<br>';
+            echo $customer['address'].'<br>';
+            echo $customer['phone'].'<br>';
+        ?>
+        </h3>
+    </div>
+</div>
     <div class="row">
         <div class="col-md-1"></div>
     <div class="col-md-10">
