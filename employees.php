@@ -19,7 +19,6 @@ This is the php code to manage the data submitted by the form
 -->
 
 <?php
-
 // check if form data needs to be processed
 
 // include config and utils files
@@ -281,7 +280,7 @@ if (isset($_POST['submit'])) {
     
     
     // set up a query to get information on the pizzas from the database
-    $query = 'SELECT * from employees' ;
+    $query = 'SELECT * from employees where grocerid = '.$_SESSION['grocerid'].';' ;
     
     
     // run the query
