@@ -33,7 +33,7 @@ if (isset($_POST['submit'])) {
     // if we are here, it means that the form was submitted and we need to process form data
     
     // get data from form
-    $categoryid = $_POST['category-id'];
+    $categoryid = $_POST['prodcategories-id'];
     $name = $_POST['name'];
     $brand = $_POST['brand'];
     $price = $_POST['price'];
@@ -65,11 +65,6 @@ if (isset($_POST['submit'])) {
         $isComplete = false;
     }
     
-    
-    if (!isset($description) || (strlen($description)==0)) {
-        $errorMessage .= "Please enter product description.\n";
-        $isComplete = false;
-    }
     
     // Stop execution and show error if the form is not complete
     if($isComplete) {
@@ -240,7 +235,7 @@ if (isset($_POST['submit'])) {
 
 <!-- shape -->
 <div class="form-group">
-    <label for="category-id">Category:</label>
+    <label for="prodcategories-id">Category:</label>
     <?php
     // connect to the database
     if (!isset($db)) {
@@ -259,12 +254,12 @@ if (isset($_POST['submit'])) {
 
 <div class="form-group">
     <label for="price">Cost per Unit:</label>
-    <input type="number" class="form-control" name="price" value="<?php if($price) { echo $price; } ?>"/>
+    <input type="text" class="form-control" name="price" value="<?php if($price) { echo $price; } ?>"/>
 </div>
 
 <div class="form-group">
     <label for="saleprice">Sale Price:</label>
-    <input type="number" class="form-control" name="saleprice" value="<?php if($saleprice) { echo $saleprice; } ?>"/>
+    <input type="text" class="form-control" name="saleprice" value="<?php if($saleprice) { echo $saleprice; } ?>"/>
 </div>
 
 <div class="form-group">
